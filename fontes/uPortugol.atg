@@ -1,0 +1,76 @@
+import java.io.*;
+import java.util.ArrayList;
+
+/**
+ * @Author: Gabriel Rocha de Lima (grl@icomp.ufam.edu.br)
+ * Exercício de Compiladores lecionado por Marco Cristo (Icomp/UFAM)
+ * Icomp/UFAM - AM - Brasil
+ * Sun Nov, 15, 2020
+ */
+
+class ChangeWords {
+    ArrayList<String> inputWords;
+    ArrayList<String> placeHolders;
+    String line;
+    String outputString;
+
+    public ChangeWords() {
+        this.line = "";
+        this.outputString = "";
+        this.inputWords = new ArrayList();
+        this.placeHolders = new ArrayList();
+    }
+
+    public void clearBuffers() {
+        this.line += "\n";
+        this.inputWords.clear();
+        this.placeHolders.clear();
+    }
+
+    public void add(String text) {
+        this.line += text + " ";
+    }
+
+    public void addInputWord(String input) {
+        this.inputWords.add(input);
+    }
+
+    public void showInputWords() {
+        System.out.println(this.inputWords);
+    }
+
+    public void handlePlaceHolder(String digits) {
+        int readedIndex = Integer.parseInt(digits);
+        String searchedPlaceHolder = this.inputWords.get(readedIndex-1);        
+        this.line+= searchedPlaceHolder + " ";
+    }
+
+    public void showPlaceHolders() {
+        System.out.println(this.placeHolders);
+    }    
+
+    public void show() {
+        System.out.println(this.line);
+    }
+
+}
+
+COMPILER UPortugol
+
+ChangeWords handler;
+
+CHARACTERS
+    letra = 'A'..'Z' + 'a'..'z'.
+    digito = "0123456789".
+
+TOKENS
+    palavra = letra { letra }.
+    placeHolderWord = "{" digito { digito } "}".
+
+IGNORE '\t' + '\r' + '\n'
+
+PRODUCTIONS
+    UPortugol = Variavel .
+    Variavel = "variavel" palavra {"," palavra } ":" "inteiro" ";" .
+
+END UPortugol.
