@@ -26,6 +26,9 @@ class SemanticAnalyzerAndHtmlTransformer {
     public void debug(String s) {
         System.out.println(s);
     }
+    public void debugNewInteger(String s) {
+        System.out.print(s + " ");
+    }
 
 }
 
@@ -34,8 +37,8 @@ class SemanticAnalyzerAndHtmlTransformer {
 public class Parser {
 	public static final int _EOF = 0;
 	public static final int _palavra = 1;
-	public static final int _placeHolderWord = 2;
-	public static final int maxT = 8;
+	public static final int _digit = 2;
+	public static final int maxT = 13;
 
 	static final boolean T = true;
 	static final boolean x = false;
@@ -111,25 +114,51 @@ public class Parser {
 	}
 	
 	void UPortugol() {
-		String declaredVar = ""; 
-		declaredVar = Variable();
+		String newInt = ""; 
+		newInt = NewInteger();
 		while (la.kind == 3) {
-			declaredVar = Variable();
+			newInt = NewInteger();
 		}
+	}
+
+	String  NewInteger() {
+		String  newInt;
+		Expect(3);
+		Expect(4);
+		if (la.kind == 5) {
+			Get();
+			Expect(2);
+			while (la.kind == 2) {
+				Get();
+			}
+			Expect(6);
+			Expect(7);
+		} else if (la.kind == 8) {
+			Get();
+			Expect(2);
+			while (la.kind == 9) {
+				Get();
+				Expect(2);
+			}
+			Expect(10);
+			Expect(7);
+		} else SynErr(14);
+		newInt = t.val; 
+		return newInt;
 	}
 
 	String  Variable() {
 		String  var;
-		Expect(3);
+		Expect(11);
 		Expect(1);
 		handler.debug(t.val); 
-		while (la.kind == 4) {
+		while (la.kind == 9) {
 			Get();
 			Expect(1);
 			handler.debug(t.val); 
 		}
-		Expect(5);
-		Expect(6);
+		Expect(12);
+		Expect(4);
 		Expect(7);
 		var = t.val; 
 		return var;
@@ -147,7 +176,7 @@ public class Parser {
 	}
 
 	private static final boolean[][] set = {
-		{T,x,x,x, x,x,x,x, x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x}
 
 	};
 } // end Parser
@@ -174,13 +203,19 @@ class Errors {
 		switch (n) {
 			case 0: s = "EOF expected"; break;
 			case 1: s = "palavra expected"; break;
-			case 2: s = "placeHolderWord expected"; break;
-			case 3: s = "\"variavel\" expected"; break;
-			case 4: s = "\",\" expected"; break;
-			case 5: s = "\":\" expected"; break;
-			case 6: s = "\"inteiro\" expected"; break;
+			case 2: s = "digit expected"; break;
+			case 3: s = "\"novo\" expected"; break;
+			case 4: s = "\"inteiro\" expected"; break;
+			case 5: s = "\"[\" expected"; break;
+			case 6: s = "\"]\" expected"; break;
 			case 7: s = "\";\" expected"; break;
-			case 8: s = "??? expected"; break;
+			case 8: s = "\"{\" expected"; break;
+			case 9: s = "\",\" expected"; break;
+			case 10: s = "\"}\" expected"; break;
+			case 11: s = "\"variavel\" expected"; break;
+			case 12: s = "\":\" expected"; break;
+			case 13: s = "??? expected"; break;
+			case 14: s = "invalid NewInteger"; break;
 			default: s = "error " + n; break;
 		}
 		printMsg(line, col, s);

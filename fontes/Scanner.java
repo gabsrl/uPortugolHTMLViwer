@@ -250,8 +250,8 @@ class StartStates {
 public class Scanner {
 	static final char EOL = '\n';
 	static final int  eofSym = 0;
-	static final int maxT = 8;
-	static final int noSym = 8;
+	static final int maxT = 13;
+	static final int noSym = 13;
 
 
 	public Buffer buffer; // scanner buffer
@@ -278,13 +278,18 @@ public class Scanner {
 		literals = new HashMap();
 		for (int i = 65; i <= 90; ++i) start.set(i, 1);
 		for (int i = 97; i <= 122; ++i) start.set(i, 1);
-		start.set(123, 2); 
-		start.set(44, 5); 
-		start.set(58, 6); 
-		start.set(59, 7); 
+		for (int i = 48; i <= 57; ++i) start.set(i, 2);
+		start.set(91, 3); 
+		start.set(93, 4); 
+		start.set(59, 5); 
+		start.set(123, 6); 
+		start.set(44, 7); 
+		start.set(125, 8); 
+		start.set(58, 9); 
 		start.set(Buffer.EOF, -1);
-		literals.put("variavel", new Integer(3));
-		literals.put("inteiro", new Integer(6));
+		literals.put("novo", new Integer(3));
+		literals.put("inteiro", new Integer(4));
+		literals.put("variavel", new Integer(11));
 
 	}
 	
@@ -380,20 +385,23 @@ public class Scanner {
 					if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z') {AddCh(); state = 1; break;}
 					else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 				case 2:
-					if (ch >= '0' && ch <= '9') {AddCh(); state = 3; break;}
-					else {state = 0; break;}
+					recEnd = pos; recKind = 2;
+					if (ch >= '0' && ch <= '9') {AddCh(); state = 2; break;}
+					else {t.kind = 2; break loop;}
 				case 3:
-					if (ch >= '0' && ch <= '9') {AddCh(); state = 3; break;}
-					else if (ch == '}') {AddCh(); state = 4; break;}
-					else {state = 0; break;}
-				case 4:
-					{t.kind = 2; break loop;}
-				case 5:
-					{t.kind = 4; break loop;}
-				case 6:
 					{t.kind = 5; break loop;}
-				case 7:
+				case 4:
+					{t.kind = 6; break loop;}
+				case 5:
 					{t.kind = 7; break loop;}
+				case 6:
+					{t.kind = 8; break loop;}
+				case 7:
+					{t.kind = 9; break loop;}
+				case 8:
+					{t.kind = 10; break loop;}
+				case 9:
+					{t.kind = 12; break loop;}
 
 			}
 		}

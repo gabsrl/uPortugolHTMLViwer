@@ -24,6 +24,9 @@ class SemanticAnalyzerAndHtmlTransformer {
     public void debug(String s) {
         System.out.println(s);
     }
+    public void debugNewInteger(String s) {
+        System.out.print(s + " ");
+    }
 
 }
 
@@ -33,20 +36,26 @@ SemanticAnalyzerAndHtmlTransformer handler = new SemanticAnalyzerAndHtmlTransfor
 
 CHARACTERS
     letra = 'A'..'Z' + 'a'..'z'.
-    digito = "0123456789".
+    digit = "0123456789".
 
 TOKENS
-    palavra = letra { letra }.
-    placeHolderWord = "{" digito { digito } "}".
+    palavra = letra { letra } .
+    digit = digit { digit } .
 
 IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
-    UPortugol               (. String declaredVar = ""; .)
-    = Variable<out declaredVar>
+    UPortugol               (. String newInt = ""; .)
+    = NewInteger<out newInt>
         { 
-            Variable<out declaredVar>
+            NewInteger<out newInt>
         } 
+    .
+
+    NewInteger<out String newInt> = 
+    "novo" "inteiro" ( "[" digit { digit } "]" ";"
+        | "{" digit { "," digit } "}" ";"
+    ) (. newInt = t.val; .)
     .
 
     Variable<out String var>
@@ -57,3 +66,15 @@ PRODUCTIONS
     .
 
 END UPortugol.
+
+/**
+ * Teste para Variable
+ * 
+ *     UPortugol               (. String declaredVar = ""; .)
+    = Variable<out declaredVar>
+        { 
+            Variable<out declaredVar>
+        } 
+    .
+ * 
+ */
