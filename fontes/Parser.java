@@ -114,11 +114,29 @@ public class Parser {
 	}
 	
 	void UPortugol() {
-		String newInt = ""; 
-		newInt = NewInteger();
-		while (la.kind == 3) {
-			newInt = NewInteger();
+		String declaration = ""; 
+		declaration = VariableDeclaration();
+		while (la.kind == 11) {
+			declaration = VariableDeclaration();
 		}
+	}
+
+	String  VariableDeclaration() {
+		String  declaration;
+		String var = ""; 
+		Expect(11);
+		var = Variable();
+		handler.debug(var); 
+		while (la.kind == 9) {
+			Get();
+			var = Variable();
+			handler.debug(var); 
+		}
+		Expect(12);
+		Expect(4);
+		Expect(7);
+		declaration = t.val; 
+		return declaration;
 	}
 
 	String  NewInteger() {
@@ -149,17 +167,7 @@ public class Parser {
 
 	String  Variable() {
 		String  var;
-		Expect(11);
 		Expect(1);
-		handler.debug(t.val); 
-		while (la.kind == 9) {
-			Get();
-			Expect(1);
-			handler.debug(t.val); 
-		}
-		Expect(12);
-		Expect(4);
-		Expect(7);
 		var = t.val; 
 		return var;
 	}

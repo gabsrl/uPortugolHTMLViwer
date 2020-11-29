@@ -36,6 +36,7 @@ SemanticAnalyzerAndHtmlTransformer handler = new SemanticAnalyzerAndHtmlTransfor
 
 CHARACTERS
     letra = 'A'..'Z' + 'a'..'z'.
+    upperLetters = 'A'..'Z' .
     digit = "0123456789".
 
 TOKENS
@@ -45,12 +46,14 @@ TOKENS
 IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
-    UPortugol               (. String newInt = ""; .)
-    = NewInteger<out newInt>
-        { 
-            NewInteger<out newInt>
+    UPortugol   (. String declaration = ""; .)
+    = VariableDeclaration<out declaration>
+        {
+            VariableDeclaration<out declaration>
         } 
     .
+
+
 
     NewInteger<out String newInt> = 
     "novo" "inteiro" ( "[" digit { digit } "]" ";"
@@ -58,23 +61,15 @@ PRODUCTIONS
     ) (. newInt = t.val; .)
     .
 
-    Variable<out String var>
-    = "variavel" palavra (. handler.debug(t.val); .)
+    VariableDeclaration<out String declaration> (. String var = ""; .)
+    = "variavel" Variable<out var> (. handler.debug(var); .)
         {
-            "," palavra (. handler.debug(t.val); .)
-        } ":" "inteiro" ";" (. var = t.val; .)
+            "," Variable<out var> (. handler.debug(var); .)
+        } ":" "inteiro" ";" (. declaration = t.val; .)
+    .
+
+    Variable<out String var>
+    =  palavra (. var = t.val; .)
     .
 
 END UPortugol.
-
-/**
- * Teste para Variable
- * 
- *     UPortugol               (. String declaredVar = ""; .)
-    = Variable<out declaredVar>
-        { 
-            Variable<out declaredVar>
-        } 
-    .
- * 
- */
