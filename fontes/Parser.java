@@ -10,49 +10,21 @@ import java.util.ArrayList;
  * Sun Nov, 15, 2020
  */
 
-class ChangeWords {
+class SemanticAnalyzerAndHtmlTransformer {
     ArrayList<String> inputWords;
     ArrayList<String> placeHolders;
     String line;
     String outputString;
 
-    public ChangeWords() {
+    public SemanticAnalyzerAndHtmlTransformer() {
         this.line = "";
         this.outputString = "";
         this.inputWords = new ArrayList();
         this.placeHolders = new ArrayList();
     }
 
-    public void clearBuffers() {
-        this.line += "\n";
-        this.inputWords.clear();
-        this.placeHolders.clear();
-    }
-
-    public void add(String text) {
-        this.line += text + " ";
-    }
-
-    public void addInputWord(String input) {
-        this.inputWords.add(input);
-    }
-
-    public void showInputWords() {
-        System.out.println(this.inputWords);
-    }
-
-    public void handlePlaceHolder(String digits) {
-        int readedIndex = Integer.parseInt(digits);
-        String searchedPlaceHolder = this.inputWords.get(readedIndex-1);        
-        this.line+= searchedPlaceHolder + " ";
-    }
-
-    public void showPlaceHolders() {
-        System.out.println(this.placeHolders);
-    }    
-
-    public void show() {
-        System.out.println(this.line);
+    public void debug(String s) {
+        System.out.println(s);
     }
 
 }
@@ -76,7 +48,7 @@ public class Parser {
 	public Scanner scanner;
 	public Errors errors;
 
-	ChangeWords handler;
+	SemanticAnalyzerAndHtmlTransformer handler = new SemanticAnalyzerAndHtmlTransformer();
 
 
 
@@ -139,22 +111,28 @@ public class Parser {
 	}
 	
 	void UPortugol() {
-		Variavel();
+		String declaredVar = ""; 
+		declaredVar = Variable();
 		while (la.kind == 3) {
-			Variavel();
+			declaredVar = Variable();
 		}
 	}
 
-	void Variavel() {
+	String  Variable() {
+		String  var;
 		Expect(3);
 		Expect(1);
+		handler.debug(t.val); 
 		while (la.kind == 4) {
 			Get();
 			Expect(1);
+			handler.debug(t.val); 
 		}
 		Expect(5);
 		Expect(6);
 		Expect(7);
+		var = t.val; 
+		return var;
 	}
 
 
