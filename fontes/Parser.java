@@ -26,7 +26,7 @@ class SemanticAnalyzerAndHtmlTransformer {
     public void debug(String s) {
         System.out.println(s);
     }
-    public void debugNewInteger(String s) {
+    public void debugInline(String s) {
         System.out.print(s + " ");
     }
 
@@ -38,7 +38,7 @@ public class Parser {
 	public static final int _EOF = 0;
 	public static final int _palavra = 1;
 	public static final int _digit = 2;
-	public static final int maxT = 13;
+	public static final int maxT = 16;
 
 	static final boolean T = true;
 	static final boolean x = false;
@@ -115,54 +115,19 @@ public class Parser {
 	
 	void UPortugol() {
 		String declaration = ""; 
-		declaration = VariableDeclaration();
-		while (la.kind == 11) {
-			declaration = VariableDeclaration();
+		Read();
+		while (la.kind == 3) {
+			Read();
 		}
 	}
 
-	String  VariableDeclaration() {
-		String  declaration;
-		String var = ""; 
-		Expect(11);
-		var = Variable();
-		handler.debug(var); 
-		while (la.kind == 9) {
-			Get();
-			var = Variable();
-			handler.debug(var); 
-		}
-		Expect(12);
-		Expect(4);
-		Expect(7);
-		declaration = t.val; 
-		return declaration;
-	}
-
-	String  NewInteger() {
-		String  newInt;
+	void Read() {
+		String readFromKeyboard = ""; 
 		Expect(3);
 		Expect(4);
-		if (la.kind == 5) {
-			Get();
-			Expect(2);
-			while (la.kind == 2) {
-				Get();
-			}
-			Expect(6);
-			Expect(7);
-		} else if (la.kind == 8) {
-			Get();
-			Expect(2);
-			while (la.kind == 9) {
-				Get();
-				Expect(2);
-			}
-			Expect(10);
-			Expect(7);
-		} else SynErr(14);
-		newInt = t.val; 
-		return newInt;
+		readFromKeyboard = Variable();
+		Expect(5);
+		Expect(6);
 	}
 
 	String  Variable() {
@@ -170,6 +135,50 @@ public class Parser {
 		Expect(1);
 		var = t.val; 
 		return var;
+	}
+
+	String  NewInteger() {
+		String  newInt;
+		Expect(7);
+		Expect(8);
+		if (la.kind == 9) {
+			Get();
+			Expect(2);
+			while (la.kind == 2) {
+				Get();
+			}
+			Expect(10);
+			Expect(6);
+		} else if (la.kind == 11) {
+			Get();
+			Expect(2);
+			while (la.kind == 12) {
+				Get();
+				Expect(2);
+			}
+			Expect(13);
+			Expect(6);
+		} else SynErr(17);
+		newInt = t.val; 
+		return newInt;
+	}
+
+	String  VariableDeclaration() {
+		String  declaration;
+		String var = ""; 
+		Expect(14);
+		var = Variable();
+		handler.debug(var); 
+		while (la.kind == 12) {
+			Get();
+			var = Variable();
+			handler.debug(var); 
+		}
+		Expect(15);
+		Expect(8);
+		Expect(6);
+		declaration = t.val; 
+		return declaration;
 	}
 
 
@@ -184,7 +193,7 @@ public class Parser {
 	}
 
 	private static final boolean[][] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x}
 
 	};
 } // end Parser
@@ -212,18 +221,21 @@ class Errors {
 			case 0: s = "EOF expected"; break;
 			case 1: s = "palavra expected"; break;
 			case 2: s = "digit expected"; break;
-			case 3: s = "\"novo\" expected"; break;
-			case 4: s = "\"inteiro\" expected"; break;
-			case 5: s = "\"[\" expected"; break;
-			case 6: s = "\"]\" expected"; break;
-			case 7: s = "\";\" expected"; break;
-			case 8: s = "\"{\" expected"; break;
-			case 9: s = "\",\" expected"; break;
-			case 10: s = "\"}\" expected"; break;
-			case 11: s = "\"variavel\" expected"; break;
-			case 12: s = "\":\" expected"; break;
-			case 13: s = "??? expected"; break;
-			case 14: s = "invalid NewInteger"; break;
+			case 3: s = "\"leia\" expected"; break;
+			case 4: s = "\"(\" expected"; break;
+			case 5: s = "\")\" expected"; break;
+			case 6: s = "\";\" expected"; break;
+			case 7: s = "\"novo\" expected"; break;
+			case 8: s = "\"inteiro\" expected"; break;
+			case 9: s = "\"[\" expected"; break;
+			case 10: s = "\"]\" expected"; break;
+			case 11: s = "\"{\" expected"; break;
+			case 12: s = "\",\" expected"; break;
+			case 13: s = "\"}\" expected"; break;
+			case 14: s = "\"variavel\" expected"; break;
+			case 15: s = "\":\" expected"; break;
+			case 16: s = "??? expected"; break;
+			case 17: s = "invalid NewInteger"; break;
 			default: s = "error " + n; break;
 		}
 		printMsg(line, col, s);

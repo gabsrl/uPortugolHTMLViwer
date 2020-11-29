@@ -1,0 +1,3 @@
+leia(umaVariavel); leia(duasVar);
+leia(qualquercoisa);
+leia(duasCoisas); leia(duasCoisasMesmaLinha);

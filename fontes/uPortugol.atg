@@ -24,7 +24,7 @@ class SemanticAnalyzerAndHtmlTransformer {
     public void debug(String s) {
         System.out.println(s);
     }
-    public void debugNewInteger(String s) {
+    public void debugInline(String s) {
         System.out.print(s + " ");
     }
 
@@ -47,13 +47,16 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-    = VariableDeclaration<out declaration>
-        {
-            VariableDeclaration<out declaration>
-        } 
+    = Read { Read }
     .
 
 
+    Read    (. String readFromKeyboard = ""; .)
+    = "leia"
+        "(" 
+            Variable<out readFromKeyboard> 
+        ")" ";" 
+    .
 
     NewInteger<out String newInt> = 
     "novo" "inteiro" ( "[" digit { digit } "]" ";"
