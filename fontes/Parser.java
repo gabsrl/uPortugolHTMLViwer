@@ -140,6 +140,9 @@ public class Parser {
 	
 	void UPortugol() {
 		Variavel();
+		while (la.kind == 3) {
+			Variavel();
+		}
 	}
 
 	void Variavel() {

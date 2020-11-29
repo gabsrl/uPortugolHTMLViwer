@@ -1,1 +1,4 @@
-variavel camelCase: inteiro;
+            variavel camelCase, camelCaseDois, VariasVariaveis :    inteiro   ;
+            variavel segundaVariavel, terceiraVariavel, quartaVariavel :    inteiro   ;
+            variavel somenteUmaVariavelNestaLinha: inteiro;
+            variavel palavraFinal: inteiro                    ;

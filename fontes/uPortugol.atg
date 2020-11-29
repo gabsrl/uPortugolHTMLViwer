@@ -70,7 +70,7 @@ TOKENS
 IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
-    UPortugol = Variavel .
+    UPortugol = Variavel { Variavel } .
     Variavel = "variavel" palavra {"," palavra } ":" "inteiro" ";" .
 
 END UPortugol.
