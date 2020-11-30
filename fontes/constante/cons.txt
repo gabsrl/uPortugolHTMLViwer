@@ -1,0 +1,3 @@
+constante TAM = 10;
+constante MAIORQUECINCO = 6;
+constante MENORQUEDEZ = 9;

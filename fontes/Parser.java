@@ -39,7 +39,7 @@ public class Parser {
 	public static final int _ident = 1;
 	public static final int _number = 2;
 	public static final int _constantNumber = 3;
-	public static final int maxT = 30;
+	public static final int maxT = 32;
 
 	static final boolean T = true;
 	static final boolean x = false;
@@ -116,20 +116,22 @@ public class Parser {
 	
 	void UPortugol() {
 		String declaration = ""; 
-		Expr();
+		ConstantDeclaration();
 		System.out.println(t.val); 
-		while (StartOf(1)) {
-			Expr();
+		while (la.kind == 19) {
+			ConstantDeclaration();
 			System.out.println(t.val); 
 		}
 	}
 
-	void Expr() {
-		AriExpr();
-		if (StartOf(2)) {
-			RelOp();
-			AriExpr();
-		}
+	void ConstantDeclaration() {
+		String declaredConstant = ""; 
+		Expect(19);
+		declaredConstant = Constant();
+		Expect(20);
+		Expect(2);
+		handler.debugln(t.val); 
+		Expect(7);
 	}
 
 	void Read() {
@@ -169,7 +171,7 @@ public class Parser {
 				} else if (la.kind == 2) {
 					Get();
 					handler.debug(t.val); 
-				} else SynErr(31);
+				} else SynErr(33);
 			}
 		}
 		Expect(6);
@@ -205,7 +207,7 @@ public class Parser {
 			
 		} else if (la.kind == 12) {
 			Get();
-		} else SynErr(32);
+		} else SynErr(34);
 		
 	}
 
@@ -230,7 +232,7 @@ public class Parser {
 			}
 			Expect(17);
 			Expect(7);
-		} else SynErr(33);
+		} else SynErr(35);
 		newInt = t.val; 
 		return newInt;
 	}
@@ -249,7 +251,7 @@ public class Parser {
 			Get();
 		} else if (la.kind == 12) {
 			Get();
-		} else SynErr(34);
+		} else SynErr(36);
 		Expect(7);
 		declaration = t.val; 
 		return declaration;
@@ -262,10 +264,18 @@ public class Parser {
 		return constant;
 	}
 
+	void Expr() {
+		AriExpr();
+		if (StartOf(1)) {
+			RelOp();
+			AriExpr();
+		}
+	}
+
 	void AriExpr() {
 		Term();
-		while (la.kind == 19 || la.kind == 20) {
-			if (la.kind == 19) {
+		while (la.kind == 21 || la.kind == 22) {
+			if (la.kind == 21) {
 				Get();
 			} else {
 				Get();
@@ -276,14 +286,6 @@ public class Parser {
 
 	void RelOp() {
 		switch (la.kind) {
-		case 24: {
-			Get();
-			break;
-		}
-		case 25: {
-			Get();
-			break;
-		}
 		case 26: {
 			Get();
 			break;
@@ -300,16 +302,24 @@ public class Parser {
 			Get();
 			break;
 		}
-		default: SynErr(35); break;
+		case 30: {
+			Get();
+			break;
+		}
+		case 31: {
+			Get();
+			break;
+		}
+		default: SynErr(37); break;
 		}
 	}
 
 	void Term() {
 		Fator();
-		while (la.kind == 21 || la.kind == 22 || la.kind == 23) {
-			if (la.kind == 21) {
+		while (la.kind == 23 || la.kind == 24 || la.kind == 25) {
+			if (la.kind == 23) {
 				Get();
-			} else if (la.kind == 22) {
+			} else if (la.kind == 24) {
 				Get();
 			} else {
 				Get();
@@ -327,7 +337,7 @@ public class Parser {
 			}
 		} else if (la.kind == 2) {
 			Get();
-		} else if (la.kind == 20) {
+		} else if (la.kind == 22) {
 			Get();
 			Fator();
 		} else if (la.kind == 5) {
@@ -336,7 +346,7 @@ public class Parser {
 			Expect(6);
 		} else if (la.kind == 3) {
 			cons = Constant();
-		} else SynErr(36);
+		} else SynErr(38);
 	}
 
 
@@ -351,9 +361,8 @@ public class Parser {
 	}
 
 	private static final boolean[][] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, x,x}
 
 	};
 } // end Parser
@@ -397,24 +406,26 @@ class Errors {
 			case 16: s = "\"{\" expected"; break;
 			case 17: s = "\"}\" expected"; break;
 			case 18: s = "\"variavel\" expected"; break;
-			case 19: s = "\"+\" expected"; break;
-			case 20: s = "\"-\" expected"; break;
-			case 21: s = "\"*\" expected"; break;
-			case 22: s = "\"/\" expected"; break;
-			case 23: s = "\"%\" expected"; break;
-			case 24: s = "\"==\" expected"; break;
-			case 25: s = "\"!=\" expected"; break;
-			case 26: s = "\"<\" expected"; break;
-			case 27: s = "\">\" expected"; break;
-			case 28: s = "\"<=\" expected"; break;
-			case 29: s = "\"=>\" expected"; break;
-			case 30: s = "??? expected"; break;
-			case 31: s = "invalid ProcedureCall"; break;
-			case 32: s = "invalid ProcedureParams"; break;
-			case 33: s = "invalid NewInteger"; break;
-			case 34: s = "invalid VariableDeclaration"; break;
-			case 35: s = "invalid RelOp"; break;
-			case 36: s = "invalid Fator"; break;
+			case 19: s = "\"constante\" expected"; break;
+			case 20: s = "\"=\" expected"; break;
+			case 21: s = "\"+\" expected"; break;
+			case 22: s = "\"-\" expected"; break;
+			case 23: s = "\"*\" expected"; break;
+			case 24: s = "\"/\" expected"; break;
+			case 25: s = "\"%\" expected"; break;
+			case 26: s = "\"==\" expected"; break;
+			case 27: s = "\"!=\" expected"; break;
+			case 28: s = "\"<\" expected"; break;
+			case 29: s = "\">\" expected"; break;
+			case 30: s = "\"<=\" expected"; break;
+			case 31: s = "\"=>\" expected"; break;
+			case 32: s = "??? expected"; break;
+			case 33: s = "invalid ProcedureCall"; break;
+			case 34: s = "invalid ProcedureParams"; break;
+			case 35: s = "invalid NewInteger"; break;
+			case 36: s = "invalid VariableDeclaration"; break;
+			case 37: s = "invalid RelOp"; break;
+			case 38: s = "invalid Fator"; break;
 			default: s = "error " + n; break;
 		}
 		printMsg(line, col, s);

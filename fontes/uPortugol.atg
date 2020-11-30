@@ -50,9 +50,9 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	= Expr  (. System.out.println(t.val); .)
+	= ConstantDeclaration  (. System.out.println(t.val); .)
 		{ 
-			Expr (. System.out.println(t.val); .)
+			ConstantDeclaration (. System.out.println(t.val); .)
 		}
     .
 
@@ -138,6 +138,12 @@ PRODUCTIONS
 
     Variable<out String var>
     =  ident (. handler.debug(t.val); var = t.val; .)
+	.
+
+	ConstantDeclaration									(. String declaredConstant = ""; .)
+	= "constante" Constant<out declaredConstant>
+			"=" number 									(. handler.debugln(t.val); .)
+		";"
 	.
 
 	Constant<out String constant>
