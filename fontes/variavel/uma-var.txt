@@ -1,7 +1,9 @@
-            variavel camelCase, camelCaseDois, VariasVariaveis :    inteiro   ;
+            variavel camelCase, camelCaseDois, variasVariaveis :    inteiro   ;
             variavel segundaVariavel, terceiraVariavel, quartaVariavel :    inteiro   ;
             variavel somenteUmaVariavelNestaLinha: inteiro;
 variavel palavraFinal: inteiro                    ;
 variavel vetor, outroVetor, maisUmVetor: inteiro[];
 variavel teste: inteiro;
 variavel testeMaisUm, testeMaisDois: inteiro[];
+variavel v1, v2, v23, v4, v5, t4, t3: inteiro[];
+variavel usandoNumeros12Agora10, cameloEstilo: inteiro;

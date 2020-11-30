@@ -42,7 +42,7 @@ CHARACTERS
     digit = "0123456789".
 
 TOKENS
-    ident = letra { letra } .
+    ident = letterLower { letterLower | letterUpper | digit } .
     number = digit { digit } .
 
 IGNORE '\t' + '\r' + '\n'
@@ -136,7 +136,7 @@ PRODUCTIONS
     .
 
     Variable<out String var>
-    =  ident (. var = t.val; .)
+    =  ident (. handler.debug(t.val); var = t.val; .)
 	.
 	
 	Expr

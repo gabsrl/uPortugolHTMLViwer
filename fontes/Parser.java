@@ -157,7 +157,7 @@ public class Parser {
 	String  Variable() {
 		String  var;
 		Expect(1);
-		var = t.val; 
+		handler.debug(t.val); var = t.val; 
 		return var;
 	}
 
