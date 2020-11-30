@@ -37,7 +37,7 @@ class SemanticAnalyzerAndHtmlTransformer {
 public class Parser {
 	public static final int _EOF = 0;
 	public static final int _ident = 1;
-	public static final int _digit = 2;
+	public static final int _number = 2;
 	public static final int maxT = 18;
 
 	static final boolean T = true;
@@ -253,7 +253,7 @@ class Errors {
 		switch (n) {
 			case 0: s = "EOF expected"; break;
 			case 1: s = "ident expected"; break;
-			case 2: s = "digit expected"; break;
+			case 2: s = "number expected"; break;
 			case 3: s = "\"leia\" expected"; break;
 			case 4: s = "\"(\" expected"; break;
 			case 5: s = "\")\" expected"; break;
