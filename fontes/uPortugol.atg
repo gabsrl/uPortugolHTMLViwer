@@ -47,7 +47,10 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-    = ProcedureCall ";" { ProcedureCall ";" }
+	= Expr  (. System.out.println(t.val); .)
+		{ 
+			Expr (. System.out.println(t.val); .)
+		}
     .
 
 
@@ -128,6 +131,56 @@ PRODUCTIONS
 
     Variable<out String var>
     =  ident (. var = t.val; .)
-    .
+	.
+	
+	Expr
+	= AriExpr
+		[
+			RelOp
+			AriExpr
+		]
+	.
+
+	AriExpr
+	= Term
+		{
+			(
+				"+"
+				| "-"
+			)
+			Term
+		}
+		
+	.
+
+	Term
+	= Fator
+		{
+			(
+				"*"
+				| "/"
+				| "%"
+			)
+			Fator
+		}
+	.
+
+	Fator
+	= ident
+		| number
+		| "-" Fator
+		| 	"("
+				Expr 
+			")"
+	.
+	
+	RelOp
+	= "=="
+		|"!="
+		| "<"
+		| ">" 
+		| "<="
+		| "=>"
+	.
 
 END UPortugol.

@@ -1,0 +1,4 @@
+custo + 1
+j - 1
+TAM - 1
+(dir + esq) / 2
