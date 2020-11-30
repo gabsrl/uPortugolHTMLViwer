@@ -62,7 +62,7 @@ PRODUCTIONS
     .
 
 	ProcedureCall	(. String argument = ""; .)
-	= ident
+	=
 		"("
 			[
 				(
