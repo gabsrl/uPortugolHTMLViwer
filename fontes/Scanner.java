@@ -250,8 +250,8 @@ class StartStates {
 public class Scanner {
 	static final char EOL = '\n';
 	static final int  eofSym = 0;
-	static final int maxT = 16;
-	static final int noSym = 16;
+	static final int maxT = 18;
+	static final int noSym = 18;
 
 
 	public Buffer buffer; // scanner buffer
@@ -277,22 +277,25 @@ public class Scanner {
 		start = new StartStates();
 		literals = new HashMap();
 		for (int i = 65; i <= 90; ++i) start.set(i, 1);
-		for (int i = 97; i <= 122; ++i) start.set(i, 1);
+		for (int i = 97; i <= 104; ++i) start.set(i, 1);
+		for (int i = 106; i <= 122; ++i) start.set(i, 1);
 		for (int i = 48; i <= 57; ++i) start.set(i, 2);
 		start.set(40, 3); 
 		start.set(41, 4); 
 		start.set(59, 5); 
-		start.set(91, 6); 
-		start.set(93, 7); 
-		start.set(123, 8); 
-		start.set(44, 9); 
-		start.set(125, 10); 
-		start.set(58, 11); 
+		start.set(44, 6); 
+		start.set(58, 7); 
+		start.set(105, 14); 
+		start.set(91, 10); 
+		start.set(93, 11); 
+		start.set(123, 12); 
+		start.set(125, 13); 
 		start.set(Buffer.EOF, -1);
 		literals.put("leia", new Integer(3));
-		literals.put("novo", new Integer(7));
-		literals.put("inteiro", new Integer(8));
-		literals.put("variavel", new Integer(14));
+		literals.put("procedimento", new Integer(7));
+		literals.put("inteiro", new Integer(10));
+		literals.put("novo", new Integer(12));
+		literals.put("variavel", new Integer(17));
 
 	}
 	
@@ -398,17 +401,57 @@ public class Scanner {
 				case 5:
 					{t.kind = 6; break loop;}
 				case 6:
-					{t.kind = 9; break loop;}
+					{t.kind = 8; break loop;}
 				case 7:
-					{t.kind = 10; break loop;}
+					{t.kind = 9; break loop;}
 				case 8:
-					{t.kind = 11; break loop;}
+					if (ch == ']') {AddCh(); state = 9; break;}
+					else {state = 0; break;}
 				case 9:
-					{t.kind = 12; break loop;}
+					{t.kind = 11; break loop;}
 				case 10:
 					{t.kind = 13; break loop;}
 				case 11:
+					{t.kind = 14; break loop;}
+				case 12:
 					{t.kind = 15; break loop;}
+				case 13:
+					{t.kind = 16; break loop;}
+				case 14:
+					recEnd = pos; recKind = 1;
+					if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'm' || ch >= 'o' && ch <= 'z') {AddCh(); state = 1; break;}
+					else if (ch == 'n') {AddCh(); state = 15; break;}
+					else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				case 15:
+					recEnd = pos; recKind = 1;
+					if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 's' || ch >= 'u' && ch <= 'z') {AddCh(); state = 1; break;}
+					else if (ch == 't') {AddCh(); state = 16; break;}
+					else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				case 16:
+					recEnd = pos; recKind = 1;
+					if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'd' || ch >= 'f' && ch <= 'z') {AddCh(); state = 1; break;}
+					else if (ch == 'e') {AddCh(); state = 17; break;}
+					else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				case 17:
+					recEnd = pos; recKind = 1;
+					if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'h' || ch >= 'j' && ch <= 'z') {AddCh(); state = 1; break;}
+					else if (ch == 'i') {AddCh(); state = 18; break;}
+					else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				case 18:
+					recEnd = pos; recKind = 1;
+					if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'q' || ch >= 's' && ch <= 'z') {AddCh(); state = 1; break;}
+					else if (ch == 'r') {AddCh(); state = 19; break;}
+					else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				case 19:
+					recEnd = pos; recKind = 1;
+					if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'n' || ch >= 'p' && ch <= 'z') {AddCh(); state = 1; break;}
+					else if (ch == 'o') {AddCh(); state = 20; break;}
+					else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
+				case 20:
+					recEnd = pos; recKind = 1;
+					if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z') {AddCh(); state = 1; break;}
+					else if (ch == '[') {AddCh(); state = 8; break;}
+					else {t.kind = 1; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 
 			}
 		}

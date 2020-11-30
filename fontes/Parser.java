@@ -38,7 +38,7 @@ public class Parser {
 	public static final int _EOF = 0;
 	public static final int _ident = 1;
 	public static final int _digit = 2;
-	public static final int maxT = 16;
+	public static final int maxT = 18;
 
 	static final boolean T = true;
 	static final boolean x = false;
@@ -115,10 +115,30 @@ public class Parser {
 	
 	void UPortugol() {
 		String declaration = ""; 
-		Read();
-		while (la.kind == 3) {
-			Read();
+		ProcedureDeclaration();
+		while (la.kind == 7) {
+			ProcedureDeclaration();
 		}
+	}
+
+	void ProcedureDeclaration() {
+		Expect(7);
+		Expect(1);
+		handler.debugInline(t.val); 
+		Expect(4);
+		if (la.kind == 1) {
+			ProcedureParams();
+			while (la.kind == 8) {
+				Get();
+				ProcedureParams();
+			}
+		}
+		Expect(5);
+		if (la.kind == 9) {
+			Get();
+			Expect(10);
+		}
+		handler.debug(t.val); 
 	}
 
 	void Read() {
@@ -137,28 +157,41 @@ public class Parser {
 		return var;
 	}
 
+	void ProcedureParams() {
+		String param=""; 
+		param = Variable();
+		handler.debugInline(param); 
+		Expect(9);
+		if (la.kind == 10) {
+			Get();
+		} else if (la.kind == 11) {
+			Get();
+		} else SynErr(19);
+		handler.debugInline(t.val); 
+	}
+
 	String  NewInteger() {
 		String  newInt;
-		Expect(7);
-		Expect(8);
-		if (la.kind == 9) {
+		Expect(12);
+		Expect(10);
+		if (la.kind == 13) {
 			Get();
 			Expect(2);
 			while (la.kind == 2) {
 				Get();
 			}
-			Expect(10);
+			Expect(14);
 			Expect(6);
-		} else if (la.kind == 11) {
+		} else if (la.kind == 15) {
 			Get();
 			Expect(2);
-			while (la.kind == 12) {
+			while (la.kind == 8) {
 				Get();
 				Expect(2);
 			}
-			Expect(13);
+			Expect(16);
 			Expect(6);
-		} else SynErr(17);
+		} else SynErr(20);
 		newInt = t.val; 
 		return newInt;
 	}
@@ -166,16 +199,16 @@ public class Parser {
 	String  VariableDeclaration() {
 		String  declaration;
 		String var = ""; 
-		Expect(14);
+		Expect(17);
 		var = Variable();
 		handler.debug(var); 
-		while (la.kind == 12) {
+		while (la.kind == 8) {
 			Get();
 			var = Variable();
 			handler.debug(var); 
 		}
-		Expect(15);
-		Expect(8);
+		Expect(9);
+		Expect(10);
 		Expect(6);
 		declaration = t.val; 
 		return declaration;
@@ -193,7 +226,7 @@ public class Parser {
 	}
 
 	private static final boolean[][] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x}
 
 	};
 } // end Parser
@@ -225,17 +258,20 @@ class Errors {
 			case 4: s = "\"(\" expected"; break;
 			case 5: s = "\")\" expected"; break;
 			case 6: s = "\";\" expected"; break;
-			case 7: s = "\"novo\" expected"; break;
-			case 8: s = "\"inteiro\" expected"; break;
-			case 9: s = "\"[\" expected"; break;
-			case 10: s = "\"]\" expected"; break;
-			case 11: s = "\"{\" expected"; break;
-			case 12: s = "\",\" expected"; break;
-			case 13: s = "\"}\" expected"; break;
-			case 14: s = "\"variavel\" expected"; break;
-			case 15: s = "\":\" expected"; break;
-			case 16: s = "??? expected"; break;
-			case 17: s = "invalid NewInteger"; break;
+			case 7: s = "\"procedimento\" expected"; break;
+			case 8: s = "\",\" expected"; break;
+			case 9: s = "\":\" expected"; break;
+			case 10: s = "\"inteiro\" expected"; break;
+			case 11: s = "\"inteiro[]\" expected"; break;
+			case 12: s = "\"novo\" expected"; break;
+			case 13: s = "\"[\" expected"; break;
+			case 14: s = "\"]\" expected"; break;
+			case 15: s = "\"{\" expected"; break;
+			case 16: s = "\"}\" expected"; break;
+			case 17: s = "\"variavel\" expected"; break;
+			case 18: s = "??? expected"; break;
+			case 19: s = "invalid ProcedureParams"; break;
+			case 20: s = "invalid NewInteger"; break;
 			default: s = "error " + n; break;
 		}
 		printMsg(line, col, s);

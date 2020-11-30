@@ -47,7 +47,7 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-    = Read { Read }
+    = ProcedureDeclaration { ProcedureDeclaration }
     .
 
 
@@ -56,6 +56,25 @@ PRODUCTIONS
         "(" 
             Variable<out readFromKeyboard> 
         ")" ";" 
+    .
+
+    ProcedureDeclaration
+    = "procedimento"
+        ident  (. handler.debugInline(t.val); .)
+        "("
+            [
+                ProcedureParams { "," ProcedureParams } 
+            ]
+        ")" [":" "inteiro"] (. handler.debug(t.val); .)
+    .
+
+    ProcedureParams             (. String param=""; .)
+    = Variable<out param>        (. handler.debugInline(param); .)
+        ":"
+        (
+            "inteiro"
+        |   "inteiro[]"
+        )   (. handler.debugInline(t.val); .)
     .
 
     NewInteger<out String newInt> = 
