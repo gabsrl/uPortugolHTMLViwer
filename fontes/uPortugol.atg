@@ -59,22 +59,22 @@ PRODUCTIONS
     .
 
 	ProcedureCall	(. String argument = ""; .)
-	= ident (. handler.debugInline(t.val); .)
+	= ident
 		"("
 			[
 				(
-					Variable<out argument> (. handler.debugInline(argument); .)
-					| number  (. System.out.print(t.val); .)
+					Variable<out argument>
+					| number
 				)
 				{
 					"," 
 					(
-						Variable<out argument> (. handler.debugInline(argument); .)
-						| number (. System.out.print(t.val); .)
+						Variable<out argument> 
+						| number
 					) 
 				}
 			]
-		")" (. System.out.println(""); .)
+		")"
 	.
 
     ProcedureDeclaration

@@ -126,29 +126,23 @@ public class Parser {
 	void ProcedureCall() {
 		String argument = ""; 
 		Expect(1);
-		handler.debugInline(t.val); 
 		Expect(5);
 		if (la.kind == 1 || la.kind == 2) {
 			if (la.kind == 1) {
 				argument = Variable();
-				handler.debugInline(argument); 
 			} else {
 				Get();
-				System.out.print(t.val); 
 			}
 			while (la.kind == 7) {
 				Get();
 				if (la.kind == 1) {
 					argument = Variable();
-					handler.debugInline(argument); 
 				} else if (la.kind == 2) {
 					Get();
-					System.out.print(t.val); 
 				} else SynErr(19);
 			}
 		}
 		Expect(6);
-		System.out.println(""); 
 	}
 
 	void Read() {
