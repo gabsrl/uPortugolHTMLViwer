@@ -158,12 +158,13 @@ public class Parser {
 	}
 
 	void ProcedureParams() {
-		String param=""; 
-		param = Variable();
-		handler.debugInline(param); 
+		String paramName=""; 
+		paramName = Variable();
+		handler.debugInline(paramName); 
 		Expect(9);
 		if (la.kind == 10) {
 			Get();
+			
 		} else if (la.kind == 11) {
 			Get();
 		} else SynErr(19);
