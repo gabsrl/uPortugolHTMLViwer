@@ -43,15 +43,16 @@ CHARACTERS
 
 TOKENS
     ident = letterLower { letterLower | letterUpper | digit } .
-    number = digit { digit } .
+	number = digit { digit } .
+	constantNumber = letterUpper { letterUpper } .
 
 IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	= ProcedureDeclaration  (. System.out.println(t.val); .)
+	= Expr  (. System.out.println(t.val); .)
 		{ 
-			ProcedureDeclaration (. System.out.println(t.val); .)
+			Expr (. System.out.println(t.val); .)
 		}
     .
 
@@ -138,6 +139,10 @@ PRODUCTIONS
     Variable<out String var>
     =  ident (. handler.debug(t.val); var = t.val; .)
 	.
+
+	Constant<out String constant>
+	= constantNumber (. handler.debug(t.val); constant = t.val; .)
+	.
 	
 	Expr
 	= AriExpr
@@ -171,7 +176,7 @@ PRODUCTIONS
 		}
 	.
 
-	Fator
+	Fator (. String cons = ""; .)
 	= ident
 		[
 			ProcedureCall
@@ -181,6 +186,7 @@ PRODUCTIONS
 		| 	"("
 				Expr 
 			")"
+		| Constant<out cons>
 	.
 	
 	RelOp
