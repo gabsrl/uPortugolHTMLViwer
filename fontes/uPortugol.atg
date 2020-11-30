@@ -21,10 +21,10 @@ class SemanticAnalyzerAndHtmlTransformer {
         this.placeHolders = new ArrayList();
     }
 
-    public void debug(String s) {
+    public void debugln(String s) {
         System.out.println(s);
     }
-    public void debugInline(String s) {
+    public void debug(String s) {
         System.out.print(s + " ");
     }
 
@@ -55,25 +55,25 @@ PRODUCTIONS
 
 
     Read    									(. String readFromKeyboard = ""; .)
-    = "leia"
+    = "leia"									(. handler.debug(t.val); .)
         "(" 
-            Variable<out readFromKeyboard> 
+            Variable<out readFromKeyboard> 		(. handler.debug(readFromKeyboard); .)
         ")" ";" 
     .
 
-	ProcedureCall	(. String argument = ""; .)
+	ProcedureCall								(. String argument = ""; .)
 	=
 		"("
 			[
 				(
-					Variable<out argument>
-					| number
+					Variable<out argument>		(. handler.debug(argument); .)
+					| number					(. handler.debug(t.val); .)
 				)
 				{
 					"," 
 					(
-						Variable<out argument> 
-						| number
+						Variable<out argument>  (. handler.debug(argument); .)
+						| number				(. handler.debug(t.val); .)
 					) 
 				}
 			]
@@ -82,7 +82,7 @@ PRODUCTIONS
 
     ProcedureDeclaration
     = "procedimento"
-        ident  (. handler.debugInline(t.val); .)
+        ident 
         "("
             [
 				ProcedureParams
@@ -90,16 +90,16 @@ PRODUCTIONS
 					"," ProcedureParams 
 				} 
             ]
-        ")" [":" "inteiro"] (. handler.debug(t.val); .)
+        ")" [":" "inteiro"] (. .)
     .
 
     ProcedureParams             		(. String paramName=""; .)
-    = Variable<out paramName>        	(. handler.debugInline(paramName); .)
+    = Variable<out paramName>        	(. .)
         ":"
         (
             "inteiro"					(. /** bind de parametro e seu tipo, ex: <param, type> */.)
     		| "inteiro[]"
-        )   					(. handler.debugInline(t.val); .)
+        )   					(. .)
     .
 
 	NewInteger<out String newInt>
@@ -122,9 +122,9 @@ PRODUCTIONS
     .
 
     VariableDeclaration<out String declaration> 					(. String var = ""; .)
-    	= "variavel" Variable<out var> 									(. handler.debug(var); .)
+    	= "variavel" Variable<out var> 									(. .)
         	{
-            	"," Variable<out var> 									(. handler.debug(var); .)
+            	"," Variable<out var> 									(. .)
 			} ":" "inteiro" 
 		";" 														(. declaration = t.val; .)
     .

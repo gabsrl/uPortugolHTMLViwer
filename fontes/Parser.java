@@ -23,10 +23,10 @@ class SemanticAnalyzerAndHtmlTransformer {
         this.placeHolders = new ArrayList();
     }
 
-    public void debug(String s) {
+    public void debugln(String s) {
         System.out.println(s);
     }
-    public void debugInline(String s) {
+    public void debug(String s) {
         System.out.print(s + " ");
     }
 
@@ -134,8 +134,10 @@ public class Parser {
 	void Read() {
 		String readFromKeyboard = ""; 
 		Expect(3);
+		handler.debug(t.val); 
 		Expect(4);
 		readFromKeyboard = Variable();
+		handler.debug(readFromKeyboard); 
 		Expect(5);
 		Expect(6);
 	}
@@ -153,15 +155,19 @@ public class Parser {
 		if (la.kind == 1 || la.kind == 2) {
 			if (la.kind == 1) {
 				argument = Variable();
+				handler.debug(argument); 
 			} else {
 				Get();
+				handler.debug(t.val); 
 			}
 			while (la.kind == 7) {
 				Get();
 				if (la.kind == 1) {
 					argument = Variable();
+					handler.debug(argument); 
 				} else if (la.kind == 2) {
 					Get();
+					handler.debug(t.val); 
 				} else SynErr(30);
 			}
 		}
@@ -171,7 +177,7 @@ public class Parser {
 	void ProcedureDeclaration() {
 		Expect(8);
 		Expect(1);
-		handler.debugInline(t.val); 
+		
 		Expect(4);
 		if (la.kind == 1) {
 			ProcedureParams();
@@ -185,13 +191,13 @@ public class Parser {
 			Get();
 			Expect(10);
 		}
-		handler.debug(t.val); 
+		
 	}
 
 	void ProcedureParams() {
 		String paramName=""; 
 		paramName = Variable();
-		handler.debugInline(paramName); 
+		
 		Expect(9);
 		if (la.kind == 10) {
 			Get();
@@ -199,7 +205,7 @@ public class Parser {
 		} else if (la.kind == 11) {
 			Get();
 		} else SynErr(31);
-		handler.debugInline(t.val); 
+		
 	}
 
 	String  NewInteger() {
@@ -233,11 +239,11 @@ public class Parser {
 		String var = ""; 
 		Expect(17);
 		var = Variable();
-		handler.debug(var); 
+		
 		while (la.kind == 7) {
 			Get();
 			var = Variable();
-			handler.debug(var); 
+			
 		}
 		Expect(9);
 		Expect(10);
