@@ -2,3 +2,4 @@ procedimento primeiroTeste(j: inteiro, aux: inteiro, vet: inteiro[]) : inteiro
 procedimento segundoTeste(var: inteiro) : inteiro
 procedimento semParametro():inteiro
 procedimento semParamSemRetorno()
+procedimento change2Origin(v: inteiro, v2:inteiro)

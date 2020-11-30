@@ -49,9 +49,9 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	= VariableDeclaration<out declaration>  (. System.out.println(t.val); .)
+	= ProcedureDeclaration  (. System.out.println(t.val); .)
 		{ 
-			VariableDeclaration<out declaration> (. System.out.println(t.val); .)
+			ProcedureDeclaration (. System.out.println(t.val); .)
 		}
     .
 
@@ -84,7 +84,7 @@ PRODUCTIONS
 
     ProcedureDeclaration
     = "procedimento"
-        ident 
+        ident 									(. handler.debug(t.val); .)
         "("
             [
 				ProcedureParams

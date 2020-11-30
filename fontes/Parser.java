@@ -115,32 +115,32 @@ public class Parser {
 	
 	void UPortugol() {
 		String declaration = ""; 
-		declaration = VariableDeclaration();
+		ProcedureDeclaration();
 		System.out.println(t.val); 
-		while (la.kind == 17) {
-			declaration = VariableDeclaration();
+		while (la.kind == 8) {
+			ProcedureDeclaration();
 			System.out.println(t.val); 
 		}
 	}
 
-	String  VariableDeclaration() {
-		String  declaration;
-		String var = ""; 
-		Expect(17);
-		var = Variable();
-		while (la.kind == 7) {
-			Get();
-			var = Variable();
+	void ProcedureDeclaration() {
+		Expect(8);
+		Expect(1);
+		handler.debug(t.val); 
+		Expect(4);
+		if (la.kind == 1) {
+			ProcedureParams();
+			while (la.kind == 7) {
+				Get();
+				ProcedureParams();
+			}
 		}
-		Expect(9);
-		if (la.kind == 10) {
+		Expect(5);
+		if (la.kind == 9) {
 			Get();
-		} else if (la.kind == 11) {
-			Get();
-		} else SynErr(30);
-		Expect(6);
-		declaration = t.val; 
-		return declaration;
+			Expect(10);
+		}
+		
 	}
 
 	void Read() {
@@ -180,29 +180,10 @@ public class Parser {
 				} else if (la.kind == 2) {
 					Get();
 					handler.debug(t.val); 
-				} else SynErr(31);
+				} else SynErr(30);
 			}
 		}
 		Expect(5);
-	}
-
-	void ProcedureDeclaration() {
-		Expect(8);
-		Expect(1);
-		Expect(4);
-		if (la.kind == 1) {
-			ProcedureParams();
-			while (la.kind == 7) {
-				Get();
-				ProcedureParams();
-			}
-		}
-		Expect(5);
-		if (la.kind == 9) {
-			Get();
-			Expect(10);
-		}
-		
 	}
 
 	void ProcedureParams() {
@@ -215,7 +196,7 @@ public class Parser {
 			
 		} else if (la.kind == 11) {
 			Get();
-		} else SynErr(32);
+		} else SynErr(31);
 		
 	}
 
@@ -240,9 +221,29 @@ public class Parser {
 			}
 			Expect(16);
 			Expect(6);
-		} else SynErr(33);
+		} else SynErr(32);
 		newInt = t.val; 
 		return newInt;
+	}
+
+	String  VariableDeclaration() {
+		String  declaration;
+		String var = ""; 
+		Expect(17);
+		var = Variable();
+		while (la.kind == 7) {
+			Get();
+			var = Variable();
+		}
+		Expect(9);
+		if (la.kind == 10) {
+			Get();
+		} else if (la.kind == 11) {
+			Get();
+		} else SynErr(33);
+		Expect(6);
+		declaration = t.val; 
+		return declaration;
 	}
 
 	void Expr() {
@@ -395,10 +396,10 @@ class Errors {
 			case 27: s = "\"<=\" expected"; break;
 			case 28: s = "\"=>\" expected"; break;
 			case 29: s = "??? expected"; break;
-			case 30: s = "invalid VariableDeclaration"; break;
-			case 31: s = "invalid ProcedureCall"; break;
-			case 32: s = "invalid ProcedureParams"; break;
-			case 33: s = "invalid NewInteger"; break;
+			case 30: s = "invalid ProcedureCall"; break;
+			case 31: s = "invalid ProcedureParams"; break;
+			case 32: s = "invalid NewInteger"; break;
+			case 33: s = "invalid VariableDeclaration"; break;
 			case 34: s = "invalid RelOp"; break;
 			case 35: s = "invalid Fator"; break;
 			default: s = "error " + n; break;
