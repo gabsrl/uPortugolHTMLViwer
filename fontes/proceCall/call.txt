@@ -1,0 +1,3 @@
+chamadaDeFuncao(umaVar, segundaVar, terceiraVar);
+chamdaDeFuncaoSemArg();
+funcComUmArg();

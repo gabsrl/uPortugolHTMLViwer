@@ -280,9 +280,9 @@ public class Scanner {
 		for (int i = 97; i <= 104; ++i) start.set(i, 1);
 		for (int i = 106; i <= 122; ++i) start.set(i, 1);
 		for (int i = 48; i <= 57; ++i) start.set(i, 2);
-		start.set(40, 3); 
-		start.set(41, 4); 
-		start.set(59, 5); 
+		start.set(59, 3); 
+		start.set(40, 4); 
+		start.set(41, 5); 
 		start.set(44, 6); 
 		start.set(58, 7); 
 		start.set(105, 14); 
@@ -291,8 +291,8 @@ public class Scanner {
 		start.set(123, 12); 
 		start.set(125, 13); 
 		start.set(Buffer.EOF, -1);
-		literals.put("leia", new Integer(3));
-		literals.put("procedimento", new Integer(7));
+		literals.put("leia", new Integer(4));
+		literals.put("procedimento", new Integer(8));
 		literals.put("inteiro", new Integer(10));
 		literals.put("novo", new Integer(12));
 		literals.put("variavel", new Integer(17));
@@ -395,13 +395,13 @@ public class Scanner {
 					if (ch >= '0' && ch <= '9') {AddCh(); state = 2; break;}
 					else {t.kind = 2; break loop;}
 				case 3:
-					{t.kind = 4; break loop;}
+					{t.kind = 3; break loop;}
 				case 4:
 					{t.kind = 5; break loop;}
 				case 5:
 					{t.kind = 6; break loop;}
 				case 6:
-					{t.kind = 8; break loop;}
+					{t.kind = 7; break loop;}
 				case 7:
 					{t.kind = 9; break loop;}
 				case 8:

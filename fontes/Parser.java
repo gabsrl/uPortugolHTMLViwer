@@ -115,39 +115,39 @@ public class Parser {
 	
 	void UPortugol() {
 		String declaration = ""; 
-		ProcedureDeclaration();
-		while (la.kind == 7) {
-			ProcedureDeclaration();
+		ProcedureCall();
+		Expect(3);
+		while (la.kind == 1) {
+			ProcedureCall();
+			Expect(3);
 		}
 	}
 
-	void ProcedureDeclaration() {
-		Expect(7);
+	void ProcedureCall() {
+		String argument = ""; 
 		Expect(1);
 		handler.debugInline(t.val); 
-		Expect(4);
+		Expect(5);
 		if (la.kind == 1) {
-			ProcedureParams();
-			while (la.kind == 8) {
+			argument = Variable();
+			handler.debugInline(argument); 
+			while (la.kind == 7) {
 				Get();
-				ProcedureParams();
+				argument = Variable();
+				handler.debugInline(argument); 
 			}
 		}
-		Expect(5);
-		if (la.kind == 9) {
-			Get();
-			Expect(10);
-		}
-		handler.debug(t.val); 
+		Expect(6);
+		System.out.println(""); 
 	}
 
 	void Read() {
 		String readFromKeyboard = ""; 
-		Expect(3);
 		Expect(4);
-		readFromKeyboard = Variable();
 		Expect(5);
+		readFromKeyboard = Variable();
 		Expect(6);
+		Expect(3);
 	}
 
 	String  Variable() {
@@ -155,6 +155,26 @@ public class Parser {
 		Expect(1);
 		var = t.val; 
 		return var;
+	}
+
+	void ProcedureDeclaration() {
+		Expect(8);
+		Expect(1);
+		handler.debugInline(t.val); 
+		Expect(5);
+		if (la.kind == 1) {
+			ProcedureParams();
+			while (la.kind == 7) {
+				Get();
+				ProcedureParams();
+			}
+		}
+		Expect(6);
+		if (la.kind == 9) {
+			Get();
+			Expect(10);
+		}
+		handler.debug(t.val); 
 	}
 
 	void ProcedureParams() {
@@ -182,16 +202,16 @@ public class Parser {
 				Get();
 			}
 			Expect(14);
-			Expect(6);
+			Expect(3);
 		} else if (la.kind == 15) {
 			Get();
 			Expect(2);
-			while (la.kind == 8) {
+			while (la.kind == 7) {
 				Get();
 				Expect(2);
 			}
 			Expect(16);
-			Expect(6);
+			Expect(3);
 		} else SynErr(20);
 		newInt = t.val; 
 		return newInt;
@@ -203,14 +223,14 @@ public class Parser {
 		Expect(17);
 		var = Variable();
 		handler.debug(var); 
-		while (la.kind == 8) {
+		while (la.kind == 7) {
 			Get();
 			var = Variable();
 			handler.debug(var); 
 		}
 		Expect(9);
 		Expect(10);
-		Expect(6);
+		Expect(3);
 		declaration = t.val; 
 		return declaration;
 	}
@@ -255,12 +275,12 @@ class Errors {
 			case 0: s = "EOF expected"; break;
 			case 1: s = "ident expected"; break;
 			case 2: s = "number expected"; break;
-			case 3: s = "\"leia\" expected"; break;
-			case 4: s = "\"(\" expected"; break;
-			case 5: s = "\")\" expected"; break;
-			case 6: s = "\";\" expected"; break;
-			case 7: s = "\"procedimento\" expected"; break;
-			case 8: s = "\",\" expected"; break;
+			case 3: s = "\";\" expected"; break;
+			case 4: s = "\"leia\" expected"; break;
+			case 5: s = "\"(\" expected"; break;
+			case 6: s = "\")\" expected"; break;
+			case 7: s = "\",\" expected"; break;
+			case 8: s = "\"procedimento\" expected"; break;
 			case 9: s = "\":\" expected"; break;
 			case 10: s = "\"inteiro\" expected"; break;
 			case 11: s = "\"inteiro[]\" expected"; break;

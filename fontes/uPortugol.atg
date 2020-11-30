@@ -47,7 +47,7 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-    = ProcedureDeclaration { ProcedureDeclaration }
+    = ProcedureCall ";" { ProcedureCall ";" }
     .
 
 
@@ -57,6 +57,18 @@ PRODUCTIONS
             Variable<out readFromKeyboard> 
         ")" ";" 
     .
+
+	ProcedureCall	(. String argument = ""; .)
+	= ident (. handler.debugInline(t.val); .)
+		"("
+			[
+				Variable<out argument> (. handler.debugInline(argument); .)
+				{
+					"," Variable<out argument> (. handler.debugInline(argument); .)
+				}
+			]
+		")" (. System.out.println(""); .)
+	.
 
     ProcedureDeclaration
     = "procedimento"
