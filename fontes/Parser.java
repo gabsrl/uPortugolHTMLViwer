@@ -115,20 +115,32 @@ public class Parser {
 	
 	void UPortugol() {
 		String declaration = ""; 
-		Expr();
+		declaration = VariableDeclaration();
 		System.out.println(t.val); 
-		while (StartOf(1)) {
-			Expr();
+		while (la.kind == 17) {
+			declaration = VariableDeclaration();
 			System.out.println(t.val); 
 		}
 	}
 
-	void Expr() {
-		AriExpr();
-		if (StartOf(2)) {
-			RelOp();
-			AriExpr();
+	String  VariableDeclaration() {
+		String  declaration;
+		String var = ""; 
+		Expect(17);
+		var = Variable();
+		while (la.kind == 7) {
+			Get();
+			var = Variable();
 		}
+		Expect(9);
+		if (la.kind == 10) {
+			Get();
+		} else if (la.kind == 11) {
+			Get();
+		} else SynErr(30);
+		Expect(6);
+		declaration = t.val; 
+		return declaration;
 	}
 
 	void Read() {
@@ -168,7 +180,7 @@ public class Parser {
 				} else if (la.kind == 2) {
 					Get();
 					handler.debug(t.val); 
-				} else SynErr(30);
+				} else SynErr(31);
 			}
 		}
 		Expect(5);
@@ -177,7 +189,6 @@ public class Parser {
 	void ProcedureDeclaration() {
 		Expect(8);
 		Expect(1);
-		
 		Expect(4);
 		if (la.kind == 1) {
 			ProcedureParams();
@@ -204,7 +215,7 @@ public class Parser {
 			
 		} else if (la.kind == 11) {
 			Get();
-		} else SynErr(31);
+		} else SynErr(32);
 		
 	}
 
@@ -229,27 +240,17 @@ public class Parser {
 			}
 			Expect(16);
 			Expect(6);
-		} else SynErr(32);
+		} else SynErr(33);
 		newInt = t.val; 
 		return newInt;
 	}
 
-	String  VariableDeclaration() {
-		String  declaration;
-		String var = ""; 
-		Expect(17);
-		var = Variable();
-		
-		while (la.kind == 7) {
-			Get();
-			var = Variable();
-			
+	void Expr() {
+		AriExpr();
+		if (StartOf(1)) {
+			RelOp();
+			AriExpr();
 		}
-		Expect(9);
-		Expect(10);
-		Expect(6);
-		declaration = t.val; 
-		return declaration;
 	}
 
 	void AriExpr() {
@@ -290,7 +291,7 @@ public class Parser {
 			Get();
 			break;
 		}
-		default: SynErr(33); break;
+		default: SynErr(34); break;
 		}
 	}
 
@@ -323,7 +324,7 @@ public class Parser {
 			Get();
 			Expr();
 			Expect(5);
-		} else SynErr(34);
+		} else SynErr(35);
 	}
 
 
@@ -339,7 +340,6 @@ public class Parser {
 
 	private static final boolean[][] set = {
 		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,T,T,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, T,x,x}
 
 	};
@@ -395,11 +395,12 @@ class Errors {
 			case 27: s = "\"<=\" expected"; break;
 			case 28: s = "\"=>\" expected"; break;
 			case 29: s = "??? expected"; break;
-			case 30: s = "invalid ProcedureCall"; break;
-			case 31: s = "invalid ProcedureParams"; break;
-			case 32: s = "invalid NewInteger"; break;
-			case 33: s = "invalid RelOp"; break;
-			case 34: s = "invalid Fator"; break;
+			case 30: s = "invalid VariableDeclaration"; break;
+			case 31: s = "invalid ProcedureCall"; break;
+			case 32: s = "invalid ProcedureParams"; break;
+			case 33: s = "invalid NewInteger"; break;
+			case 34: s = "invalid RelOp"; break;
+			case 35: s = "invalid Fator"; break;
 			default: s = "error " + n; break;
 		}
 		printMsg(line, col, s);

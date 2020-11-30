@@ -47,9 +47,9 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	= Expr  (. System.out.println(t.val); .)
+	= VariableDeclaration<out declaration>  (. System.out.println(t.val); .)
 		{ 
-			Expr (. System.out.println(t.val); .)
+			VariableDeclaration<out declaration> (. System.out.println(t.val); .)
 		}
     .
 
@@ -122,10 +122,14 @@ PRODUCTIONS
     .
 
     VariableDeclaration<out String declaration> 					(. String var = ""; .)
-    	= "variavel" Variable<out var> 									(. .)
+    	= "variavel" Variable<out var> 									
         	{
-            	"," Variable<out var> 									(. .)
-			} ":" "inteiro" 
+            	"," Variable<out var> 									
+			} ":" 
+				(
+					"inteiro"
+					| "inteiro[]"
+				) 
 		";" 														(. declaration = t.val; .)
     .
 

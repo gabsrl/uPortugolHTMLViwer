@@ -2,3 +2,6 @@
             variavel segundaVariavel, terceiraVariavel, quartaVariavel :    inteiro   ;
             variavel somenteUmaVariavelNestaLinha: inteiro;
 variavel palavraFinal: inteiro                    ;
+variavel vetor, outroVetor, maisUmVetor: inteiro[];
+variavel teste: inteiro;
+variavel testeMaisUm, testeMaisDois: inteiro[];
