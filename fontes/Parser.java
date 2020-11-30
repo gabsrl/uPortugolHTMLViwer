@@ -149,7 +149,6 @@ public class Parser {
 
 	void ProcedureCall() {
 		String argument = ""; 
-		Expect(1);
 		Expect(4);
 		if (la.kind == 1 || la.kind == 2) {
 			if (la.kind == 1) {
@@ -306,6 +305,9 @@ public class Parser {
 	void Fator() {
 		if (la.kind == 1) {
 			Get();
+			if (la.kind == 4) {
+				ProcedureCall();
+			}
 		} else if (la.kind == 2) {
 			Get();
 		} else if (la.kind == 19) {

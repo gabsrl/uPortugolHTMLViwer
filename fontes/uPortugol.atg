@@ -167,6 +167,9 @@ PRODUCTIONS
 
 	Fator
 	= ident
+		[
+			ProcedureCall
+		]
 		| number
 		| "-" Fator
 		| 	"("
