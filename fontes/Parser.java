@@ -128,13 +128,23 @@ public class Parser {
 		Expect(1);
 		handler.debugInline(t.val); 
 		Expect(5);
-		if (la.kind == 1) {
-			argument = Variable();
-			handler.debugInline(argument); 
-			while (la.kind == 7) {
-				Get();
+		if (la.kind == 1 || la.kind == 2) {
+			if (la.kind == 1) {
 				argument = Variable();
 				handler.debugInline(argument); 
+			} else {
+				Get();
+				System.out.print(t.val); 
+			}
+			while (la.kind == 7) {
+				Get();
+				if (la.kind == 1) {
+					argument = Variable();
+					handler.debugInline(argument); 
+				} else if (la.kind == 2) {
+					Get();
+					System.out.print(t.val); 
+				} else SynErr(19);
 			}
 		}
 		Expect(6);
@@ -187,7 +197,7 @@ public class Parser {
 			
 		} else if (la.kind == 11) {
 			Get();
-		} else SynErr(19);
+		} else SynErr(20);
 		handler.debugInline(t.val); 
 	}
 
@@ -212,7 +222,7 @@ public class Parser {
 			}
 			Expect(16);
 			Expect(3);
-		} else SynErr(20);
+		} else SynErr(21);
 		newInt = t.val; 
 		return newInt;
 	}
@@ -291,8 +301,9 @@ class Errors {
 			case 16: s = "\"}\" expected"; break;
 			case 17: s = "\"variavel\" expected"; break;
 			case 18: s = "??? expected"; break;
-			case 19: s = "invalid ProcedureParams"; break;
-			case 20: s = "invalid NewInteger"; break;
+			case 19: s = "invalid ProcedureCall"; break;
+			case 20: s = "invalid ProcedureParams"; break;
+			case 21: s = "invalid NewInteger"; break;
 			default: s = "error " + n; break;
 		}
 		printMsg(line, col, s);

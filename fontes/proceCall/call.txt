@@ -1,3 +1,6 @@
 chamadaDeFuncao(umaVar, segundaVar, terceiraVar);
-chamdaDeFuncaoSemArg();
-funcComUmArg();
+chamdaDeFuncaoSemArg(      );
+funcComUmArg(umArgSo);
+funcCUmNumero(1);
+funcVariada( 1, mixVariaveis, 5, 7, variasVar  );
+funcSoNums(1, 4 ,5, 7, 7, 8, 9);

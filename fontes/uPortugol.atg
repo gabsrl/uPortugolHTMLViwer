@@ -62,9 +62,16 @@ PRODUCTIONS
 	= ident (. handler.debugInline(t.val); .)
 		"("
 			[
-				Variable<out argument> (. handler.debugInline(argument); .)
+				(
+					Variable<out argument> (. handler.debugInline(argument); .)
+					| number  (. System.out.print(t.val); .)
+				)
 				{
-					"," Variable<out argument> (. handler.debugInline(argument); .)
+					"," 
+					(
+						Variable<out argument> (. handler.debugInline(argument); .)
+						| number (. System.out.print(t.val); .)
+					) 
 				}
 			]
 		")" (. System.out.println(""); .)
