@@ -35,6 +35,8 @@ COMPILER UPortugol
 SemanticAnalyzerAndHtmlTransformer handler = new SemanticAnalyzerAndHtmlTransformer();
 
 CHARACTERS
+	letterLower = 'a'..'z' .
+	letterUpper = 'A'..'Z' .
     letra = 'A'..'Z' + 'a'..'z'.
     upperLetters = 'A'..'Z' .
     digit = "0123456789".
