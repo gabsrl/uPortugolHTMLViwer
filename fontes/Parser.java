@@ -437,7 +437,7 @@ class Errors {
 			case 29: s = "\"<\" expected"; break;
 			case 30: s = "\">\" expected"; break;
 			case 31: s = "\"<=\" expected"; break;
-			case 32: s = "\"=>\" expected"; break;
+			case 32: s = "\">=\" expected"; break;
 			case 33: s = "??? expected"; break;
 			case 34: s = "invalid NewInteger"; break;
 			case 35: s = "invalid RelOp"; break;

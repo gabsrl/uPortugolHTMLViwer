@@ -214,7 +214,7 @@ PRODUCTIONS
 		| "<"
 		| ">" 
 		| "<="
-		| "=>"
+		| ">="
 	.
 
 END UPortugol.

@@ -288,15 +288,15 @@ public class Scanner {
 		start.set(93, 10); 
 		start.set(123, 11); 
 		start.set(125, 12); 
-		start.set(61, 24); 
+		start.set(61, 23); 
 		start.set(43, 13); 
 		start.set(45, 14); 
 		start.set(42, 15); 
 		start.set(47, 16); 
 		start.set(37, 17); 
 		start.set(33, 19); 
-		start.set(60, 25); 
-		start.set(62, 21); 
+		start.set(60, 24); 
+		start.set(62, 25); 
 		start.set(Buffer.EOF, -1);
 		literals.put("leia", new Integer(4));
 		literals.put("inicio", new Integer(8));
@@ -444,20 +444,21 @@ public class Scanner {
 				case 20:
 					{t.kind = 28; break loop;}
 				case 21:
-					{t.kind = 30; break loop;}
-				case 22:
 					{t.kind = 31; break loop;}
-				case 23:
+				case 22:
 					{t.kind = 32; break loop;}
-				case 24:
+				case 23:
 					recEnd = pos; recKind = 21;
 					if (ch == '=') {AddCh(); state = 18; break;}
-					else if (ch == '>') {AddCh(); state = 23; break;}
 					else {t.kind = 21; break loop;}
-				case 25:
+				case 24:
 					recEnd = pos; recKind = 29;
-					if (ch == '=') {AddCh(); state = 22; break;}
+					if (ch == '=') {AddCh(); state = 21; break;}
 					else {t.kind = 29; break loop;}
+				case 25:
+					recEnd = pos; recKind = 30;
+					if (ch == '=') {AddCh(); state = 22; break;}
+					else {t.kind = 30; break loop;}
 
 			}
 		}

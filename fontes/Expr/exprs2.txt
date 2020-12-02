@@ -4,9 +4,16 @@ TAM - 1
 TAM + OUTROTAM * (MAISUMTAM - AGORATAMDENOVO) / tamanho(vet) * 5
 
 sin(45)*cos(45)
-sin(45)*cos(45) - max(2, tamanho(vetoR * 2))
+sin(45)*cos(45) - max(2, tamanho(vetoR * 2)-TAM, min(vetoR))
 
 (dir + esq) / 2
 tamanho(v) - 1
 vaierrar() + 1
 tamanho(1, varIavel, 4) - 45 + 3 * 10 + (3*4) / 2
+
+34 > 5-1
+10 >= TAM
+20 < COTG
+20 <= COS
+40 == tamanho(vetor)
+minhaVar == funcao(1, 2, 3)
