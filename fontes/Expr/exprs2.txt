@@ -4,4 +4,5 @@ TAM - 1
 TAM + OUTROTAM * (MAISUMTAM - AGORATAMDENOVO) / tamanho(vet) * 5
 (dir + esq) / 2
 tamanho(v) - 1
+vaierrar() + 1
 tamanho(1, varIavel, 4) - 45 + 3 * 10 + (3*4) / 2

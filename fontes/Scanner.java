@@ -299,7 +299,7 @@ public class Scanner {
 		start.set(62, 21); 
 		start.set(Buffer.EOF, -1);
 		literals.put("leia", new Integer(4));
-		literals.put("procedimento", new Integer(9));
+		literals.put("procedimento", new Integer(8));
 		literals.put("inteiro", new Integer(11));
 		literals.put("novo", new Integer(14));
 		literals.put("variavel", new Integer(17));
@@ -413,7 +413,7 @@ public class Scanner {
 				case 6:
 					{t.kind = 7; break loop;}
 				case 7:
-					{t.kind = 8; break loop;}
+					{t.kind = 9; break loop;}
 				case 8:
 					{t.kind = 10; break loop;}
 				case 9:

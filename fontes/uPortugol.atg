@@ -50,9 +50,9 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	= NewInteger<out declaration>  (. /*System.out.println(t.val);*/ .)
+	= FuncCall  (. /*System.out.println(t.val);*/ .)
 		{ 
-			NewInteger<out declaration> (. /*System.out.println(t.val);*/ .)
+			FuncCall (. /*System.out.println(t.val);*/ .)
 		}
     .
 
@@ -64,7 +64,7 @@ PRODUCTIONS
         ")" ";" 
     .
 
-	ProcedureCall								(. String argument = ""; .)
+	/**ProcedureCall								(. String argument = ""; .)
 	= ident
 		"("
 			[
@@ -74,7 +74,7 @@ PRODUCTIONS
 		{ 
 			ProcedureCall
 		}
-	.
+	.*/
 
     ProcedureDeclaration
     = "procedimento"
@@ -92,7 +92,10 @@ PRODUCTIONS
     ProcedureParams             		(. String paramName=""; .)
     = Variable<out paramName>        	(. .)
         ":"
-            "inteiro" ["[" "]"]
+			"inteiro" 
+			[
+				"[" "]"
+			]
     .
 
 	/** 
@@ -122,7 +125,10 @@ PRODUCTIONS
             	"," Variable<out var> 									
 			} ":" 
 
-			"inteiro" ["[" "]"]
+			"inteiro" 
+			[
+				"[" "]"
+			]
 			
 		";" 														(. declaration = t.val; .)
     .
@@ -175,9 +181,6 @@ PRODUCTIONS
 
 	Fator (. String cons = ""; .)
 	= ident
-		[
-			ProcedureCall
-		]
 		| number
 		| "-" Fator
 		| 	"("
@@ -186,6 +189,8 @@ PRODUCTIONS
 		| Constant<out cons>
 	.
 	
+	FuncCall = ident "(" {FuncCall | number} ")" .
+
 	RelOp
 	= "=="
 		|"!="

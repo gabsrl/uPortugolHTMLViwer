@@ -116,35 +116,25 @@ public class Parser {
 	
 	void UPortugol() {
 		String declaration = ""; 
-		declaration = NewInteger();
+		FuncCall();
 		
-		while (la.kind == 14) {
-			declaration = NewInteger();
+		while (la.kind == 1) {
+			FuncCall();
 			
 		}
 	}
 
-	String  NewInteger() {
-		String  newInt;
-		Expect(14);
-		Expect(11);
-		if (la.kind == 12) {
-			Get();
-			Expect(2);
-			Expect(13);
-			Expect(7);
-		} else if (la.kind == 15) {
-			Get();
-			Expect(2);
-			while (la.kind == 8) {
+	void FuncCall() {
+		Expect(1);
+		Expect(5);
+		while (la.kind == 1 || la.kind == 2) {
+			if (la.kind == 1) {
+				FuncCall();
+			} else {
 				Get();
-				Expect(2);
 			}
-			Expect(16);
-			Expect(7);
-		} else SynErr(32);
-		newInt = t.val; 
-		return newInt;
+		}
+		Expect(6);
 	}
 
 	void Read() {
@@ -165,43 +155,14 @@ public class Parser {
 		return var;
 	}
 
-	void ProcedureCall() {
-		String argument = ""; 
-		Expect(1);
-		Expect(5);
-		if (StartOf(1)) {
-			AriExpr();
-			while (la.kind == 8) {
-				Get();
-				AriExpr();
-			}
-		}
-		Expect(6);
-		while (la.kind == 1) {
-			ProcedureCall();
-		}
-	}
-
-	void AriExpr() {
-		Term();
-		while (la.kind == 20 || la.kind == 21) {
-			if (la.kind == 20) {
-				Get();
-			} else {
-				Get();
-			}
-			Term();
-		}
-	}
-
 	void ProcedureDeclaration() {
-		Expect(9);
+		Expect(8);
 		Expect(1);
 		handler.debug(t.val); 
 		Expect(5);
 		if (la.kind == 1) {
 			ProcedureParams();
-			while (la.kind == 8) {
+			while (la.kind == 9) {
 				Get();
 				ProcedureParams();
 			}
@@ -226,12 +187,35 @@ public class Parser {
 		}
 	}
 
+	String  NewInteger() {
+		String  newInt;
+		Expect(14);
+		Expect(11);
+		if (la.kind == 12) {
+			Get();
+			Expect(2);
+			Expect(13);
+			Expect(7);
+		} else if (la.kind == 15) {
+			Get();
+			Expect(2);
+			while (la.kind == 9) {
+				Get();
+				Expect(2);
+			}
+			Expect(16);
+			Expect(7);
+		} else SynErr(32);
+		newInt = t.val; 
+		return newInt;
+	}
+
 	String  VariableDeclaration() {
 		String  declaration;
 		String var = ""; 
 		Expect(17);
 		var = Variable();
-		while (la.kind == 8) {
+		while (la.kind == 9) {
 			Get();
 			var = Variable();
 		}
@@ -265,9 +249,21 @@ public class Parser {
 
 	void Expr() {
 		AriExpr();
-		if (StartOf(2)) {
+		if (StartOf(1)) {
 			RelOp();
 			AriExpr();
+		}
+	}
+
+	void AriExpr() {
+		Term();
+		while (la.kind == 20 || la.kind == 21) {
+			if (la.kind == 20) {
+				Get();
+			} else {
+				Get();
+			}
+			Term();
 		}
 	}
 
@@ -319,9 +315,6 @@ public class Parser {
 		String cons = ""; 
 		if (la.kind == 1) {
 			Get();
-			if (la.kind == 1) {
-				ProcedureCall();
-			}
 		} else if (la.kind == 2) {
 			Get();
 		} else if (la.kind == 21) {
@@ -349,7 +342,6 @@ public class Parser {
 
 	private static final boolean[][] set = {
 		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,x, x}
 
 	};
@@ -383,8 +375,8 @@ class Errors {
 			case 5: s = "\"(\" expected"; break;
 			case 6: s = "\")\" expected"; break;
 			case 7: s = "\";\" expected"; break;
-			case 8: s = "\",\" expected"; break;
-			case 9: s = "\"procedimento\" expected"; break;
+			case 8: s = "\"procedimento\" expected"; break;
+			case 9: s = "\",\" expected"; break;
 			case 10: s = "\":\" expected"; break;
 			case 11: s = "\"inteiro\" expected"; break;
 			case 12: s = "\"[\" expected"; break;
