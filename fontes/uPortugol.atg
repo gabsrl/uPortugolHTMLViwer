@@ -50,9 +50,9 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	= ConstantDeclaration  (. System.out.println(t.val); .)
+	= NewInteger<out declaration>  (. /*System.out.println(t.val);*/ .)
 		{ 
-			ConstantDeclaration (. System.out.println(t.val); .)
+			NewInteger<out declaration> (. /*System.out.println(t.val);*/ .)
 		}
     .
 
@@ -65,22 +65,15 @@ PRODUCTIONS
     .
 
 	ProcedureCall								(. String argument = ""; .)
-	=
+	= ident
 		"("
 			[
-				(
-					Variable<out argument>		(. handler.debug(argument); .)
-					| number					(. handler.debug(t.val); .)
-				)
-				{
-					"," 
-					(
-						Variable<out argument>  (. handler.debug(argument); .)
-						| number				(. handler.debug(t.val); .)
-					) 
-				}
+				AriExpr { "," AriExpr }
 			]
 		")"
+		{ 
+			ProcedureCall
+		}
 	.
 
     ProcedureDeclaration
@@ -99,20 +92,19 @@ PRODUCTIONS
     ProcedureParams             		(. String paramName=""; .)
     = Variable<out paramName>        	(. .)
         ":"
-        (
-            "inteiro"					(. /** bind de parametro e seu tipo, ex: <param, type> */.)
-    		| "inteiro[]"
-        )   					(. .)
+            "inteiro" ["[" "]"]
     .
 
-	NewInteger<out String newInt>
+	/** 
+	 * novo inteiro [12] 
+	 * novo inteiro {1 , 2 , 3, 4}
+	 * */
+
+	NewInteger<out String newInt> 
 	= "novo" "inteiro" 
 		( 
 			"[" 
 				number 
-				{ 
-					number 
-				} 
 			"]" ";"
 			| 
 			"{" 
@@ -129,10 +121,9 @@ PRODUCTIONS
         	{
             	"," Variable<out var> 									
 			} ":" 
-				(
-					"inteiro"
-					| "inteiro[]"
-				) 
+
+			"inteiro" ["[" "]"]
+			
 		";" 														(. declaration = t.val; .)
     .
 

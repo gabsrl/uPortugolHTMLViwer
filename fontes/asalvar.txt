@@ -1,0 +1,11 @@
+(
+    Variable<out argument>		(. /** */ .)
+    | number					(. handler.debug(t.val); .)
+)
+{
+    "," 
+    (
+        Variable<out argument>  (. /** */ .)
+        | number				(. handler.debug(t.val); .)
+    ) 
+}
