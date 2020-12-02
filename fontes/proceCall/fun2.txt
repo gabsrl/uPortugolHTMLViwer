@@ -1,3 +1,4 @@
+
 teste(teste2(1))
 re( 1 cur( 4 5 6 7) si(1) vi(6 8 9) dade (666))
 ca(da(vez(so(fica(melhor())))))

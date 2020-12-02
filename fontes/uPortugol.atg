@@ -50,11 +50,12 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	= ["algoritmo" ident] { ConstantDeclaration } { Procedure }
+	= Expr { Expr } .
+	/*= ["algoritmo" ident] { ConstantDeclaration } { Procedure }
 		"inicio"
 			{ Cmd }
 		"fim"
-    .
+    .*/
 
 	Cmd = 	Read
 	.
@@ -186,13 +187,21 @@ PRODUCTIONS
 	.
 
 	Fator (. String cons = ""; .)
-	= ident [ "(" Expr [","] ")" ]
+	= Name
 		| number
 		| "-" Fator
 		| 	"("
 				Expr 
 			")"
 		| Constant<out cons>
+	.
+
+	Name
+	= ident ["(" [ArgList] ")"]
+	.
+
+	ArgList
+	= Expr { "," Expr }
 	.
 	
 	//FuncCall = ident "(" { FuncCall | number } ")" . //1

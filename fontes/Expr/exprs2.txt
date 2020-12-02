@@ -2,6 +2,10 @@ custo + 1
 j - 1
 TAM - 1
 TAM + OUTROTAM * (MAISUMTAM - AGORATAMDENOVO) / tamanho(vet) * 5
+
+sin(45)*cos(45)
+sin(45)*cos(45) - max(2, tamanho(vetoR * 2))
+
 (dir + esq) / 2
 tamanho(v) - 1
 vaierrar() + 1
