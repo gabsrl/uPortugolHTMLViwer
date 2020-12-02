@@ -330,12 +330,18 @@ public class Parser {
 
 	void Name() {
 		Expect(1);
-		if (la.kind == 5) {
-			Get();
-			if (StartOf(1)) {
-				ArgList();
+		if (la.kind == 5 || la.kind == 14) {
+			if (la.kind == 5) {
+				Get();
+				if (StartOf(1)) {
+					ArgList();
+				}
+				Expect(6);
+			} else {
+				Get();
+				Expr();
+				Expect(15);
 			}
-			Expect(6);
 		}
 	}
 

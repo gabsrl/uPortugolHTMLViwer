@@ -60,9 +60,6 @@ PRODUCTIONS
 	Cmd = 	Read
 	.
 
-		
-
-
 
     Read    									(. String readFromKeyboard = ""; .)
     = "leia"									(. handler.debug(t.val); .)
@@ -71,17 +68,6 @@ PRODUCTIONS
         ")" ";" 
     .
 
-	/**ProcedureCall								(. String argument = ""; .)
-	= ident
-		"("
-			[
-				AriExpr { "," AriExpr }
-			]
-		")"
-		{ 
-			ProcedureCall
-		}
-	.*/
 	Procedure									(. String varDecl = ""; .)
 	= ProcedureDeclaration "inicio" {
 		VariableDeclaration<out varDecl>
@@ -197,12 +183,13 @@ PRODUCTIONS
 	.
 
 	Name
-	= ident ["(" [ArgList] ")"]
+	= ident [ "("  [ ArgList ] ")" | "[" Expr "]" ]
 	.
 
 	ArgList
 	= Expr { "," Expr }
 	.
+	
 	
 	//FuncCall = ident "(" { FuncCall | number } ")" . //1
 	//FuncCall = ident "("  [number { "," number }]  ")" . //2
