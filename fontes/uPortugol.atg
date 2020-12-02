@@ -50,15 +50,17 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	= Expr { Expr } .
-	/*= ["algoritmo" ident] { ConstantDeclaration } { Procedure }
+	/*= Expr { Expr } .*/
+	= ["algoritmo" ident] { ConstantDeclaration } { Procedure }
 		"inicio"
 			{ Cmd }
 		"fim"
-    .*/
+    .
 
-	Cmd = 	Read
+	Cmd = 		Read
+			| 	Instruction 
 	.
+	Instruction = Expr ["=" Expr ]";".
 
 
     Read    									(. String readFromKeyboard = ""; .)

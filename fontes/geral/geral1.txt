@@ -25,4 +25,23 @@ inicio
     leia(lendoM);
     leia(lendoN);
     leia(lendoOPQ);
+    custoTotal = custo + 1;
+    atribuicaoVarLonga = TAM + OUTROTAM * (MAISUMTAM - AGORATAMDENOVO) / tamanho(vet) * 5;
+    trigonoetria = sin(45)*cos(45) - max(2, tamanho(vetoR * 2)-TAM, min(vetoR));
+    leia(lendoNovamente);
+    continha = 1 + 1 * (2+1);
+    agoraEhUmVetor[i] = 1;
+    vet[1+i] = tamanho(vet2);
+    vet2[tamanho(vet3)+1] = vet3[tamanho(vet3)];
+    vet5[0] = func();
+    outraFuncaoQualquer();
+    varSo;
+    1;
+    2;
+    teste = testando(1+1);
+    34 > 5-1;
+    10 >= TAM;
+    20 < COTG;
+    20 <= COS;
+    40 == tamanho(vetor);
 fim
