@@ -189,7 +189,9 @@ PRODUCTIONS
 		| Constant<out cons>
 	.
 	
-	FuncCall = ident "(" {FuncCall | number} ")" .
+	//FuncCall = ident "(" { FuncCall | number } ")" . //1
+	//FuncCall = ident "("  [number { "," number }]  ")" . //2
+	FuncCall = ident "("  { FuncCall[","] | number[","] } ")" .
 
 	RelOp
 	= "=="

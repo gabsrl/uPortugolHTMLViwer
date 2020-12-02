@@ -1,0 +1,10 @@
+teste(teste2(1))
+re( 1 cur( 4 5 6 7) si(1) vi(6 8 9) dade (666))
+ca(da(vez(so(fica(melhor())))))
+
+teste()
+teste(1)
+teste(1, 2, 3, 4 ,5 , 6)
+teste1(teste2(1), 2)
+teste2(outraFunc(3, 5))
+teste2(outraFunc(3, 5), maisUmaFunc(1), maisOutra(2, 3, 4))

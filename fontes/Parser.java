@@ -130,8 +130,14 @@ public class Parser {
 		while (la.kind == 1 || la.kind == 2) {
 			if (la.kind == 1) {
 				FuncCall();
+				if (la.kind == 9) {
+					Get();
+				}
 			} else {
 				Get();
+				if (la.kind == 9) {
+					Get();
+				}
 			}
 		}
 		Expect(6);
