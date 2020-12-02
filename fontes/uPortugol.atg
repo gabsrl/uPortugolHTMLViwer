@@ -42,7 +42,7 @@ CHARACTERS
     digit = "0123456789".
 
 TOKENS
-    ident = letterLower { letterLower | letterUpper | digit } .
+	ident = letterLower { letterLower | letterUpper | digit } .
 	number = digit { digit } .
 	constantNumber = letterUpper { letterUpper } .
 
@@ -50,10 +50,7 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	= FuncCall  (. /*System.out.println(t.val);*/ .)
-		{ 
-			FuncCall (. /*System.out.println(t.val);*/ .)
-		}
+	= ["algoritmo" ident] { ConstantDeclaration } { Procedure }
     .
 
 
@@ -75,6 +72,9 @@ PRODUCTIONS
 			ProcedureCall
 		}
 	.*/
+	Procedure
+	= ProcedureDeclaration "inicio" "fim"
+	.
 
     ProcedureDeclaration
     = "procedimento"
@@ -180,7 +180,7 @@ PRODUCTIONS
 	.
 
 	Fator (. String cons = ""; .)
-	= ident
+	= ident [ "(" Expr [","] ")" ]
 		| number
 		| "-" Fator
 		| 	"("

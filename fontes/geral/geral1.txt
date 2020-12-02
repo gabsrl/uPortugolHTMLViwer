@@ -1,0 +1,15 @@
+algoritmo comparacaoAlgosOrdenacao
+constante TAM = 10;
+constante VELOCIDADE = 60;
+constante ACELERACAO = 20;
+
+procedimento imprime(v: inteiro[])
+inicio
+fim
+
+procedimento copia(v1: inteiro[], v2: inteiro[], numeroTam1: inteiro): inteiro
+inicio
+fim
+
+procedimento troque(v: inteiro[], i: inteiro, j: inteiro)
+inicio fim
