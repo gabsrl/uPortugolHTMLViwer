@@ -126,6 +126,11 @@ public class Parser {
 		while (la.kind == 11) {
 			Procedure();
 		}
+		Expect(5);
+		while (la.kind == 7) {
+			Cmd();
+		}
+		Expect(6);
 	}
 
 	void ConstantDeclaration() {
@@ -135,24 +140,32 @@ public class Parser {
 		Expect(22);
 		Expect(2);
 		handler.debugln(t.val); 
-		Expect(8);
+		Expect(10);
 	}
 
 	void Procedure() {
+		String varDecl = ""; 
 		ProcedureDeclaration();
-		Expect(9);
-		Expect(10);
+		Expect(5);
+		while (la.kind == 20) {
+			varDecl = VariableDeclaration();
+		}
+		Expect(6);
+	}
+
+	void Cmd() {
+		Read();
 	}
 
 	void Read() {
 		String readFromKeyboard = ""; 
-		Expect(5);
+		Expect(7);
 		handler.debug(t.val); 
-		Expect(6);
+		Expect(8);
 		readFromKeyboard = Variable();
 		handler.debug(readFromKeyboard); 
-		Expect(7);
-		Expect(8);
+		Expect(9);
+		Expect(10);
 	}
 
 	String  Variable() {
@@ -166,7 +179,7 @@ public class Parser {
 		Expect(11);
 		Expect(1);
 		handler.debug(t.val); 
-		Expect(6);
+		Expect(8);
 		if (la.kind == 1) {
 			ProcedureParams();
 			while (la.kind == 12) {
@@ -174,12 +187,32 @@ public class Parser {
 				ProcedureParams();
 			}
 		}
-		Expect(7);
+		Expect(9);
 		if (la.kind == 13) {
 			Get();
 			Expect(14);
 		}
 		
+	}
+
+	String  VariableDeclaration() {
+		String  declaration;
+		String var = ""; 
+		Expect(20);
+		var = Variable();
+		while (la.kind == 12) {
+			Get();
+			var = Variable();
+		}
+		Expect(13);
+		Expect(14);
+		if (la.kind == 15) {
+			Get();
+			Expect(16);
+		}
+		Expect(10);
+		declaration = t.val; 
+		return declaration;
 	}
 
 	void ProcedureParams() {
@@ -202,7 +235,7 @@ public class Parser {
 			Get();
 			Expect(2);
 			Expect(16);
-			Expect(8);
+			Expect(10);
 		} else if (la.kind == 18) {
 			Get();
 			Expect(2);
@@ -211,30 +244,10 @@ public class Parser {
 				Expect(2);
 			}
 			Expect(19);
-			Expect(8);
+			Expect(10);
 		} else SynErr(35);
 		newInt = t.val; 
 		return newInt;
-	}
-
-	String  VariableDeclaration() {
-		String  declaration;
-		String var = ""; 
-		Expect(20);
-		var = Variable();
-		while (la.kind == 12) {
-			Get();
-			var = Variable();
-		}
-		Expect(13);
-		Expect(14);
-		if (la.kind == 15) {
-			Get();
-			Expect(16);
-		}
-		Expect(8);
-		declaration = t.val; 
-		return declaration;
 	}
 
 	String  Constant() {
@@ -312,23 +325,23 @@ public class Parser {
 		String cons = ""; 
 		if (la.kind == 1) {
 			Get();
-			if (la.kind == 6) {
+			if (la.kind == 8) {
 				Get();
 				Expr();
 				if (la.kind == 12) {
 					Get();
 				}
-				Expect(7);
+				Expect(9);
 			}
 		} else if (la.kind == 2) {
 			Get();
 		} else if (la.kind == 24) {
 			Get();
 			Fator();
-		} else if (la.kind == 6) {
+		} else if (la.kind == 8) {
 			Get();
 			Expr();
-			Expect(7);
+			Expect(9);
 		} else if (la.kind == 3) {
 			cons = Constant();
 		} else SynErr(37);
@@ -336,7 +349,7 @@ public class Parser {
 
 	void FuncCall() {
 		Expect(1);
-		Expect(6);
+		Expect(8);
 		while (la.kind == 1 || la.kind == 2) {
 			if (la.kind == 1) {
 				FuncCall();
@@ -350,7 +363,7 @@ public class Parser {
 				}
 			}
 		}
-		Expect(7);
+		Expect(9);
 	}
 
 
@@ -396,12 +409,12 @@ class Errors {
 			case 2: s = "number expected"; break;
 			case 3: s = "constantNumber expected"; break;
 			case 4: s = "\"algoritmo\" expected"; break;
-			case 5: s = "\"leia\" expected"; break;
-			case 6: s = "\"(\" expected"; break;
-			case 7: s = "\")\" expected"; break;
-			case 8: s = "\";\" expected"; break;
-			case 9: s = "\"inicio\" expected"; break;
-			case 10: s = "\"fim\" expected"; break;
+			case 5: s = "\"inicio\" expected"; break;
+			case 6: s = "\"fim\" expected"; break;
+			case 7: s = "\"leia\" expected"; break;
+			case 8: s = "\"(\" expected"; break;
+			case 9: s = "\")\" expected"; break;
+			case 10: s = "\";\" expected"; break;
 			case 11: s = "\"procedimento\" expected"; break;
 			case 12: s = "\",\" expected"; break;
 			case 13: s = "\":\" expected"; break;

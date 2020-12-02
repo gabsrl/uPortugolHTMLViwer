@@ -9,7 +9,20 @@ fim
 
 procedimento copia(v1: inteiro[], v2: inteiro[], numeroTam1: inteiro): inteiro
 inicio
+
 fim
 
 procedimento troque(v: inteiro[], i: inteiro, j: inteiro)
 inicio fim
+
+procedimento minpos(v: inteiro[], i: inteiro, f: inteiro): inteiro
+inicio
+    variavel j, min, minj: inteiro;
+    variavel a, b, cOutra: inteiro[];
+fim
+
+inicio
+    leia(lendoM);
+    leia(lendoN);
+    leia(lendoOPQ);
+fim

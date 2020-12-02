@@ -51,7 +51,16 @@ IGNORE '\t' + '\r' + '\n'
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
 	= ["algoritmo" ident] { ConstantDeclaration } { Procedure }
+		"inicio"
+			{ Cmd }
+		"fim"
     .
+
+	Cmd = 	Read
+	.
+
+		
+
 
 
     Read    									(. String readFromKeyboard = ""; .)
@@ -72,8 +81,10 @@ PRODUCTIONS
 			ProcedureCall
 		}
 	.*/
-	Procedure
-	= ProcedureDeclaration "inicio" "fim"
+	Procedure									(. String varDecl = ""; .)
+	= ProcedureDeclaration "inicio" {
+		VariableDeclaration<out varDecl>
+	 } "fim"
 	.
 
     ProcedureDeclaration
@@ -97,11 +108,6 @@ PRODUCTIONS
 				"[" "]"
 			]
     .
-
-	/** 
-	 * novo inteiro [12] 
-	 * novo inteiro {1 , 2 , 3, 4}
-	 * */
 
 	NewInteger<out String newInt> 
 	= "novo" "inteiro" 

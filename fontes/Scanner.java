@@ -299,9 +299,9 @@ public class Scanner {
 		start.set(62, 21); 
 		start.set(Buffer.EOF, -1);
 		literals.put("algoritmo", new Integer(4));
-		literals.put("leia", new Integer(5));
-		literals.put("inicio", new Integer(9));
-		literals.put("fim", new Integer(10));
+		literals.put("inicio", new Integer(5));
+		literals.put("fim", new Integer(6));
+		literals.put("leia", new Integer(7));
 		literals.put("procedimento", new Integer(11));
 		literals.put("inteiro", new Integer(14));
 		literals.put("novo", new Integer(17));
@@ -410,11 +410,11 @@ public class Scanner {
 					if (ch >= 'A' && ch <= 'Z') {AddCh(); state = 3; break;}
 					else {t.kind = 3; break loop;}
 				case 4:
-					{t.kind = 6; break loop;}
-				case 5:
-					{t.kind = 7; break loop;}
-				case 6:
 					{t.kind = 8; break loop;}
+				case 5:
+					{t.kind = 9; break loop;}
+				case 6:
+					{t.kind = 10; break loop;}
 				case 7:
 					{t.kind = 12; break loop;}
 				case 8:
