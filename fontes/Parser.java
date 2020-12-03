@@ -248,10 +248,15 @@ public class Parser {
 	}
 
 	void Instruction() {
+		String newInteger = ""; 
 		Expr();
 		if (la.kind == 13) {
 			Get();
-			Expr();
+			if (StartOf(2)) {
+				Expr();
+			} else if (la.kind == 31) {
+				newInteger = NewInteger();
+			} else SynErr(49);
 		}
 		Expect(22);
 	}
@@ -278,10 +283,31 @@ public class Parser {
 
 	void Expr() {
 		AriExpr();
-		if (StartOf(2)) {
+		if (StartOf(3)) {
 			RelOp();
 			AriExpr();
 		}
+	}
+
+	String  NewInteger() {
+		String  newInt;
+		Expect(31);
+		Expect(28);
+		if (la.kind == 29) {
+			Get();
+			Expr();
+			Expect(30);
+		} else if (la.kind == 32) {
+			Get();
+			Expect(2);
+			while (la.kind == 27) {
+				Get();
+				Expect(2);
+			}
+			Expect(33);
+		} else SynErr(50);
+		newInt = t.val; 
+		return newInt;
 	}
 
 	String  Variable() {
@@ -321,29 +347,6 @@ public class Parser {
 			Get();
 			Expect(30);
 		}
-	}
-
-	String  NewInteger() {
-		String  newInt;
-		Expect(31);
-		Expect(28);
-		if (la.kind == 29) {
-			Get();
-			Expect(2);
-			Expect(30);
-			Expect(22);
-		} else if (la.kind == 32) {
-			Get();
-			Expect(2);
-			while (la.kind == 27) {
-				Get();
-				Expect(2);
-			}
-			Expect(33);
-			Expect(22);
-		} else SynErr(49);
-		newInt = t.val; 
-		return newInt;
 	}
 
 	String  Constant() {
@@ -391,7 +394,7 @@ public class Parser {
 			Get();
 			break;
 		}
-		default: SynErr(50); break;
+		default: SynErr(51); break;
 		}
 	}
 
@@ -424,7 +427,7 @@ public class Parser {
 			Expect(25);
 		} else if (la.kind == 3) {
 			cons = Constant();
-		} else SynErr(51);
+		} else SynErr(52);
 	}
 
 	void Name() {
@@ -432,7 +435,7 @@ public class Parser {
 		if (la.kind == 24 || la.kind == 29) {
 			if (la.kind == 24) {
 				Get();
-				if (StartOf(3)) {
+				if (StartOf(2)) {
 					ArgList();
 				}
 				Expect(25);
@@ -452,25 +455,6 @@ public class Parser {
 		}
 	}
 
-	void FuncCall() {
-		Expect(1);
-		Expect(24);
-		while (la.kind == 1 || la.kind == 2) {
-			if (la.kind == 1) {
-				FuncCall();
-				if (la.kind == 27) {
-					Get();
-				}
-			} else {
-				Get();
-				if (la.kind == 27) {
-					Get();
-				}
-			}
-		}
-		Expect(25);
-	}
-
 
 
 	public void Parse() {
@@ -485,8 +469,8 @@ public class Parser {
 	private static final boolean[][] set = {
 		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, x,x,x,T, x,x,T,x, T,x,x,x, T,x,x,x, x,T,x,T, T,x,x,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,x, x},
-		{x,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x}
+		{x,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,x, x}
 
 	};
 } // end Parser
@@ -560,9 +544,10 @@ class Errors {
 			case 46: s = "\">=\" expected"; break;
 			case 47: s = "??? expected"; break;
 			case 48: s = "invalid Cmd"; break;
-			case 49: s = "invalid NewInteger"; break;
-			case 50: s = "invalid RelOp"; break;
-			case 51: s = "invalid Fator"; break;
+			case 49: s = "invalid Instruction"; break;
+			case 50: s = "invalid NewInteger"; break;
+			case 51: s = "invalid RelOp"; break;
+			case 52: s = "invalid Fator"; break;
 			default: s = "error " + n; break;
 		}
 		printMsg(line, col, s);

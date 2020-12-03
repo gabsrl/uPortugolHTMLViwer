@@ -67,7 +67,12 @@ PRODUCTIONS
 			|	"caso" ident { "seja" number "faca"  Cmd { Cmd } } "outrocaso" ":" Cmd { Cmd } "fimcaso"
 			|	"retorne" Expr ";"
 	.
-	Instruction = Expr ["=" Expr ]";".
+	Instruction (. String newInteger = ""; .)
+	= Expr [ "=" 
+		(Expr
+		| NewInteger<out newInteger>
+		) 
+	] ";".
 
 
     Read    									(. String readFromKeyboard = ""; .)
@@ -109,15 +114,15 @@ PRODUCTIONS
 	= "novo" "inteiro" 
 		( 
 			"[" 
-				number 
-			"]" ";"
+				Expr 
+			"]"
 			| 
 			"{" 
 				number 
 				{ 
 					"," number 
 				} 
-			"}" ";"
+			"}"
     	) (. newInt = t.val; .)
     .
 
@@ -199,11 +204,6 @@ PRODUCTIONS
 	= Expr { "," Expr }
 	.
 	
-	
-	//FuncCall = ident "(" { FuncCall | number } ")" . //1
-	//FuncCall = ident "("  [number { "," number }]  ")" . //2
-	FuncCall = ident "("  { FuncCall[","] | number[","] } ")" .
-
 	RelOp
 	= "=="
 		|"!="
