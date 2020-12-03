@@ -111,4 +111,6 @@ inicio
             execucoes();
             atribuicao = 1 + tamanho(v) * (5 + 3);
     fimcaso
+    retorne min(vetor, tamanho(vetor));
+    retorne 50 + 50 ;
 fim

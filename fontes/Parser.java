@@ -39,7 +39,7 @@ public class Parser {
 	public static final int _ident = 1;
 	public static final int _number = 2;
 	public static final int _constantNumber = 3;
-	public static final int maxT = 46;
+	public static final int maxT = 47;
 
 	static final boolean T = true;
 	static final boolean x = false;
@@ -120,10 +120,10 @@ public class Parser {
 			Get();
 			Expect(1);
 		}
-		while (la.kind == 34) {
+		while (la.kind == 35) {
 			ConstantDeclaration();
 		}
-		while (la.kind == 25) {
+		while (la.kind == 26) {
 			Procedure();
 		}
 		Expect(5);
@@ -135,19 +135,19 @@ public class Parser {
 
 	void ConstantDeclaration() {
 		String declaredConstant = ""; 
-		Expect(34);
+		Expect(35);
 		declaredConstant = Constant();
 		Expect(13);
 		Expect(2);
 		handler.debugln(t.val); 
-		Expect(21);
+		Expect(22);
 	}
 
 	void Procedure() {
 		String varDecl = ""; 
 		ProcedureDeclaration();
 		Expect(5);
-		while (la.kind == 33) {
+		while (la.kind == 34) {
 			varDecl = VariableDeclaration();
 		}
 		Expect(6);
@@ -156,15 +156,15 @@ public class Parser {
 	void Cmd() {
 		String varDeclaration = ""; 
 		switch (la.kind) {
-		case 22: {
+		case 23: {
 			Read();
 			break;
 		}
-		case 1: case 2: case 3: case 23: case 36: {
+		case 1: case 2: case 3: case 24: case 37: {
 			Instruction();
 			break;
 		}
-		case 33: {
+		case 34: {
 			varDeclaration = VariableDeclaration();
 			break;
 		}
@@ -226,19 +226,25 @@ public class Parser {
 			Expect(20);
 			break;
 		}
-		default: SynErr(47); break;
+		case 21: {
+			Get();
+			Expr();
+			Expect(22);
+			break;
+		}
+		default: SynErr(48); break;
 		}
 	}
 
 	void Read() {
 		String readFromKeyboard = ""; 
-		Expect(22);
-		handler.debug(t.val); 
 		Expect(23);
+		handler.debug(t.val); 
+		Expect(24);
 		readFromKeyboard = Variable();
 		handler.debug(readFromKeyboard); 
-		Expect(24);
-		Expect(21);
+		Expect(25);
+		Expect(22);
 	}
 
 	void Instruction() {
@@ -247,25 +253,25 @@ public class Parser {
 			Get();
 			Expr();
 		}
-		Expect(21);
+		Expect(22);
 	}
 
 	String  VariableDeclaration() {
 		String  declaration;
 		String var = ""; 
-		Expect(33);
+		Expect(34);
 		var = Variable();
-		while (la.kind == 26) {
+		while (la.kind == 27) {
 			Get();
 			var = Variable();
 		}
 		Expect(19);
-		Expect(27);
-		if (la.kind == 28) {
+		Expect(28);
+		if (la.kind == 29) {
 			Get();
-			Expect(29);
+			Expect(30);
 		}
-		Expect(21);
+		Expect(22);
 		declaration = t.val; 
 		return declaration;
 	}
@@ -286,21 +292,21 @@ public class Parser {
 	}
 
 	void ProcedureDeclaration() {
-		Expect(25);
+		Expect(26);
 		Expect(1);
 		handler.debug(t.val); 
-		Expect(23);
+		Expect(24);
 		if (la.kind == 1) {
 			ProcedureParams();
-			while (la.kind == 26) {
+			while (la.kind == 27) {
 				Get();
 				ProcedureParams();
 			}
 		}
-		Expect(24);
+		Expect(25);
 		if (la.kind == 19) {
 			Get();
-			Expect(27);
+			Expect(28);
 		}
 		
 	}
@@ -310,32 +316,32 @@ public class Parser {
 		paramName = Variable();
 		
 		Expect(19);
-		Expect(27);
-		if (la.kind == 28) {
+		Expect(28);
+		if (la.kind == 29) {
 			Get();
-			Expect(29);
+			Expect(30);
 		}
 	}
 
 	String  NewInteger() {
 		String  newInt;
-		Expect(30);
-		Expect(27);
-		if (la.kind == 28) {
+		Expect(31);
+		Expect(28);
+		if (la.kind == 29) {
 			Get();
 			Expect(2);
-			Expect(29);
-			Expect(21);
-		} else if (la.kind == 31) {
+			Expect(30);
+			Expect(22);
+		} else if (la.kind == 32) {
 			Get();
 			Expect(2);
-			while (la.kind == 26) {
+			while (la.kind == 27) {
 				Get();
 				Expect(2);
 			}
-			Expect(32);
-			Expect(21);
-		} else SynErr(48);
+			Expect(33);
+			Expect(22);
+		} else SynErr(49);
 		newInt = t.val; 
 		return newInt;
 	}
@@ -349,8 +355,8 @@ public class Parser {
 
 	void AriExpr() {
 		Term();
-		while (la.kind == 35 || la.kind == 36) {
-			if (la.kind == 35) {
+		while (la.kind == 36 || la.kind == 37) {
+			if (la.kind == 36) {
 				Get();
 			} else {
 				Get();
@@ -361,10 +367,6 @@ public class Parser {
 
 	void RelOp() {
 		switch (la.kind) {
-		case 40: {
-			Get();
-			break;
-		}
 		case 41: {
 			Get();
 			break;
@@ -385,16 +387,20 @@ public class Parser {
 			Get();
 			break;
 		}
-		default: SynErr(49); break;
+		case 46: {
+			Get();
+			break;
+		}
+		default: SynErr(50); break;
 		}
 	}
 
 	void Term() {
 		Fator();
-		while (la.kind == 37 || la.kind == 38 || la.kind == 39) {
-			if (la.kind == 37) {
+		while (la.kind == 38 || la.kind == 39 || la.kind == 40) {
+			if (la.kind == 38) {
 				Get();
-			} else if (la.kind == 38) {
+			} else if (la.kind == 39) {
 				Get();
 			} else {
 				Get();
@@ -409,38 +415,38 @@ public class Parser {
 			Name();
 		} else if (la.kind == 2) {
 			Get();
-		} else if (la.kind == 36) {
+		} else if (la.kind == 37) {
 			Get();
 			Fator();
-		} else if (la.kind == 23) {
+		} else if (la.kind == 24) {
 			Get();
 			Expr();
-			Expect(24);
+			Expect(25);
 		} else if (la.kind == 3) {
 			cons = Constant();
-		} else SynErr(50);
+		} else SynErr(51);
 	}
 
 	void Name() {
 		Expect(1);
-		if (la.kind == 23 || la.kind == 28) {
-			if (la.kind == 23) {
+		if (la.kind == 24 || la.kind == 29) {
+			if (la.kind == 24) {
 				Get();
 				if (StartOf(3)) {
 					ArgList();
 				}
-				Expect(24);
+				Expect(25);
 			} else {
 				Get();
 				Expr();
-				Expect(29);
+				Expect(30);
 			}
 		}
 	}
 
 	void ArgList() {
 		Expr();
-		while (la.kind == 26) {
+		while (la.kind == 27) {
 			Get();
 			Expr();
 		}
@@ -448,21 +454,21 @@ public class Parser {
 
 	void FuncCall() {
 		Expect(1);
-		Expect(23);
+		Expect(24);
 		while (la.kind == 1 || la.kind == 2) {
 			if (la.kind == 1) {
 				FuncCall();
-				if (la.kind == 26) {
+				if (la.kind == 27) {
 					Get();
 				}
 			} else {
 				Get();
-				if (la.kind == 26) {
+				if (la.kind == 27) {
 					Get();
 				}
 			}
 		}
-		Expect(24);
+		Expect(25);
 	}
 
 
@@ -477,10 +483,10 @@ public class Parser {
 	}
 
 	private static final boolean[][] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,T,T,T, x,x,x,T, x,x,T,x, T,x,x,x, T,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,x,x},
-		{x,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, x,x,x,T, x,x,T,x, T,x,x,x, T,x,x,x, x,T,x,T, T,x,x,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,x, x},
+		{x,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x}
 
 	};
 } // end Parser
@@ -526,36 +532,37 @@ class Errors {
 			case 18: s = "\"outrocaso\" expected"; break;
 			case 19: s = "\":\" expected"; break;
 			case 20: s = "\"fimcaso\" expected"; break;
-			case 21: s = "\";\" expected"; break;
-			case 22: s = "\"leia\" expected"; break;
-			case 23: s = "\"(\" expected"; break;
-			case 24: s = "\")\" expected"; break;
-			case 25: s = "\"procedimento\" expected"; break;
-			case 26: s = "\",\" expected"; break;
-			case 27: s = "\"inteiro\" expected"; break;
-			case 28: s = "\"[\" expected"; break;
-			case 29: s = "\"]\" expected"; break;
-			case 30: s = "\"novo\" expected"; break;
-			case 31: s = "\"{\" expected"; break;
-			case 32: s = "\"}\" expected"; break;
-			case 33: s = "\"variavel\" expected"; break;
-			case 34: s = "\"constante\" expected"; break;
-			case 35: s = "\"+\" expected"; break;
-			case 36: s = "\"-\" expected"; break;
-			case 37: s = "\"*\" expected"; break;
-			case 38: s = "\"/\" expected"; break;
-			case 39: s = "\"%\" expected"; break;
-			case 40: s = "\"==\" expected"; break;
-			case 41: s = "\"!=\" expected"; break;
-			case 42: s = "\"<\" expected"; break;
-			case 43: s = "\">\" expected"; break;
-			case 44: s = "\"<=\" expected"; break;
-			case 45: s = "\">=\" expected"; break;
-			case 46: s = "??? expected"; break;
-			case 47: s = "invalid Cmd"; break;
-			case 48: s = "invalid NewInteger"; break;
-			case 49: s = "invalid RelOp"; break;
-			case 50: s = "invalid Fator"; break;
+			case 21: s = "\"retorne\" expected"; break;
+			case 22: s = "\";\" expected"; break;
+			case 23: s = "\"leia\" expected"; break;
+			case 24: s = "\"(\" expected"; break;
+			case 25: s = "\")\" expected"; break;
+			case 26: s = "\"procedimento\" expected"; break;
+			case 27: s = "\",\" expected"; break;
+			case 28: s = "\"inteiro\" expected"; break;
+			case 29: s = "\"[\" expected"; break;
+			case 30: s = "\"]\" expected"; break;
+			case 31: s = "\"novo\" expected"; break;
+			case 32: s = "\"{\" expected"; break;
+			case 33: s = "\"}\" expected"; break;
+			case 34: s = "\"variavel\" expected"; break;
+			case 35: s = "\"constante\" expected"; break;
+			case 36: s = "\"+\" expected"; break;
+			case 37: s = "\"-\" expected"; break;
+			case 38: s = "\"*\" expected"; break;
+			case 39: s = "\"/\" expected"; break;
+			case 40: s = "\"%\" expected"; break;
+			case 41: s = "\"==\" expected"; break;
+			case 42: s = "\"!=\" expected"; break;
+			case 43: s = "\"<\" expected"; break;
+			case 44: s = "\">\" expected"; break;
+			case 45: s = "\"<=\" expected"; break;
+			case 46: s = "\">=\" expected"; break;
+			case 47: s = "??? expected"; break;
+			case 48: s = "invalid Cmd"; break;
+			case 49: s = "invalid NewInteger"; break;
+			case 50: s = "invalid RelOp"; break;
+			case 51: s = "invalid Fator"; break;
 			default: s = "error " + n; break;
 		}
 		printMsg(line, col, s);

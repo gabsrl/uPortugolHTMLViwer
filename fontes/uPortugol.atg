@@ -50,7 +50,6 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	/*= Expr { Expr } .*/
 	= ["algoritmo" ident] { ConstantDeclaration } { Procedure }
 		"inicio"
 			{ Cmd }
@@ -66,6 +65,7 @@ PRODUCTIONS
 			|	"repita" Cmd { Cmd } "ate" Instruction
 			|	"para" Expr "=" Expr "ate" Expr "passo" number "faca" Cmd { Cmd } "fimpara"
 			|	"caso" ident { "seja" number "faca"  Cmd { Cmd } } "outrocaso" ":" Cmd { Cmd } "fimcaso"
+			|	"retorne" Expr ";"
 	.
 	Instruction = Expr ["=" Expr ]";".
 
