@@ -8,31 +8,98 @@ import java.util.ArrayList;
  * Sun Nov, 15, 2020
  */
 
-class SemanticAnalyzerAndHtmlTransformer {
-    ArrayList<String> inputWords;
-    ArrayList<String> placeHolders;
+class HtmlTransformer {
+    //ArrayList<String> inputWords;
     String line;
-    String outputString;
+	String html;
+	FileWriter writer;
+	static String htmlCssRef = "<link href=\"style.css\" rel=\"stylesheet\">";
+	static String marginLeftProp = "margin-left:";
 
-    public SemanticAnalyzerAndHtmlTransformer() {
-        this.line = "";
-        this.outputString = "";
-        this.inputWords = new ArrayList();
-        this.placeHolders = new ArrayList();
-    }
+	static String classComments = "comments";
+	static String classType = "types";
+	static String classFunc = "funcs";
+	static String classBlock = "blocks";
+	static int identation = 0;
+	static int baseOffsetIdentation = 10; // 10px
 
-    public void debugln(String s) {
+    public HtmlTransformer() {
+		try {
+			this.line = "";
+			this.html = "<html><head>" + htmlCssRef + "<title>uPortugol</title></head><body>";
+			this.writer = new FileWriter("uPortugol.html");
+		} catch(IOException e) {
+			System.out.println("Falha ao abrir/criar o arquivo html " + e.getMessage());
+		}
+	}
+
+
+	public void newLine() { 
+		int i = 0;
+
+		while( i < identation) {
+			i += 5;
+		}
+		this.html += "<p style=" + "\"" + marginLeftProp + i + "px;\">";
+	}
+
+	public void identNewLine() {
+		identation += baseOffsetIdentation;
+		this.newLine();
+	}
+
+	public void closeNewLine() { this.html += "</p>"; }
+
+	public void exdentNewLine() {
+		identation-= baseOffsetIdentation;
+		this.newLine();
+	}
+
+	
+	public void append(String genericStrToappend) {
+		this.html += genericStrToappend;
+	}
+	/**
+	 * Stylize "procedimento $procedureName"
+	 */
+	public void procedureName(String procedureName) {
+		String tagSpan = this.getOpeningSpan(classFunc);
+		String tagSpanClosing = this.getClosingSpan();
+		this.html += tagSpan + "procedimento " +  procedureName + tagSpanClosing;
+	}
+
+	public String getOpeningSpan(String styleClass) {
+		return "<span " + "class=\"" + styleClass + "\">";
+	}
+	
+	public String getClosingSpan() {
+		return "</span>";
+	}
+	
+	public void finish() {
+		try {
+			this.html += "</body></html>";
+			this.writer.write(this.html);
+			this.writer.close();
+			System.out.println("O arquivo foi gravado com sucesso!");
+		} catch(IOException e) {
+			System.out.println("Falha ao salvar o arquivo html " + e.getMessage());
+		}
+
+	}
+
+	public void debugln(String s) {
         System.out.println(s);
     }
-    public void debug(String s) {
-        System.out.print(s + " ");
-    }
 
+	public void debug(String s) {
+        System.out.print(s + " ");
+	}
 }
 
 COMPILER UPortugol
 
-SemanticAnalyzerAndHtmlTransformer handler = new SemanticAnalyzerAndHtmlTransformer();
+HtmlTransformer handler = new HtmlTransformer();
 
 CHARACTERS
 	letterLower = 'a'..'z' .
@@ -50,10 +117,16 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	= ["algoritmo" ident] { ConstantDeclaration } { Procedure }
+	= ["algoritmo" ident]
+		{ 
+			ConstantDeclaration 
+		} 
+		{ 
+			Procedure
+		}
 		"inicio"
 			{ Cmd }
-		"fim"
+		"fim"										(. handler.finish(); .)
     .
 
 	Cmd												(. String varDeclaration = ""; .)
@@ -66,7 +139,9 @@ PRODUCTIONS
 			|	"para" Expr "=" Expr "ate" Expr "passo" number "faca" Cmd { Cmd } "fimpara"
 			|	"caso" ident { "seja" number "faca"  Cmd { Cmd } } "outrocaso" ":" Cmd { Cmd } "fimcaso"
 			|	"retorne" Expr ";"
+			|	"se" Expr "entao" Cmd { Cmd } [ "senao" Cmd { Cmd } ] "fimse" ";"
 	.
+
 	Instruction (. String newInteger = ""; .)
 	= Expr [ "=" 
 		(Expr
@@ -83,22 +158,31 @@ PRODUCTIONS
     .
 
 	Procedure									(. String varDecl = ""; .)
-	= ProcedureDeclaration "inicio" {
-		VariableDeclaration<out varDecl>
-	 } "fim"
+	= ProcedureDeclaration
+		"inicio" 								(. handler.identNewLine(); handler.append("inicio"); handler.closeNewLine(); .)
+			{								
+				VariableDeclaration<out varDecl>
+			 } "fim"								(. 
+														handler.newLine();
+														handler.append("fim"); handler.closeNewLine();
+														handler.exdentNewLine();
+													.)
 	.
 
     ProcedureDeclaration
-    = "procedimento"
-        ident 									(. handler.debug(t.val); .)
-        "("
+    = "procedimento"							(. handler.newLine(); .)
+        ident 									(. handler.procedureName(t.val); .)
+        "("										(. handler.append("("); .)
             [
 				ProcedureParams
 				{
 					"," ProcedureParams 
 				} 
             ]
-        ")" [":" "inteiro"] (. .)
+		")"										(. handler.append(")"); .)
+			[
+				":" "inteiro"					(. handler.append(": inteiro"); .)
+			] 									(. handler.closeNewLine(); .)
     .
 
     ProcedureParams             		(. String paramName=""; .)

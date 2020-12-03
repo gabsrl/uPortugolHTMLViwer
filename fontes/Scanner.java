@@ -250,8 +250,8 @@ class StartStates {
 public class Scanner {
 	static final char EOL = '\n';
 	static final int  eofSym = 0;
-	static final int maxT = 47;
-	static final int noSym = 47;
+	static final int maxT = 51;
+	static final int noSym = 51;
 
 
 	public Buffer buffer; // scanner buffer
@@ -314,12 +314,16 @@ public class Scanner {
 		literals.put("outrocaso", new Integer(18));
 		literals.put("fimcaso", new Integer(20));
 		literals.put("retorne", new Integer(21));
-		literals.put("leia", new Integer(23));
-		literals.put("procedimento", new Integer(26));
-		literals.put("inteiro", new Integer(28));
-		literals.put("novo", new Integer(31));
-		literals.put("variavel", new Integer(34));
-		literals.put("constante", new Integer(35));
+		literals.put("se", new Integer(23));
+		literals.put("entao", new Integer(24));
+		literals.put("senao", new Integer(25));
+		literals.put("fimse", new Integer(26));
+		literals.put("leia", new Integer(27));
+		literals.put("procedimento", new Integer(30));
+		literals.put("inteiro", new Integer(32));
+		literals.put("novo", new Integer(35));
+		literals.put("variavel", new Integer(38));
+		literals.put("constante", new Integer(39));
 
 	}
 	
@@ -427,52 +431,52 @@ public class Scanner {
 				case 5:
 					{t.kind = 22; break loop;}
 				case 6:
-					{t.kind = 24; break loop;}
+					{t.kind = 28; break loop;}
 				case 7:
-					{t.kind = 25; break loop;}
-				case 8:
-					{t.kind = 27; break loop;}
-				case 9:
 					{t.kind = 29; break loop;}
-				case 10:
-					{t.kind = 30; break loop;}
-				case 11:
-					{t.kind = 32; break loop;}
-				case 12:
+				case 8:
+					{t.kind = 31; break loop;}
+				case 9:
 					{t.kind = 33; break loop;}
-				case 13:
+				case 10:
+					{t.kind = 34; break loop;}
+				case 11:
 					{t.kind = 36; break loop;}
-				case 14:
+				case 12:
 					{t.kind = 37; break loop;}
-				case 15:
-					{t.kind = 38; break loop;}
-				case 16:
-					{t.kind = 39; break loop;}
-				case 17:
+				case 13:
 					{t.kind = 40; break loop;}
-				case 18:
+				case 14:
 					{t.kind = 41; break loop;}
+				case 15:
+					{t.kind = 42; break loop;}
+				case 16:
+					{t.kind = 43; break loop;}
+				case 17:
+					{t.kind = 44; break loop;}
+				case 18:
+					{t.kind = 45; break loop;}
 				case 19:
 					if (ch == '=') {AddCh(); state = 20; break;}
 					else {state = 0; break;}
 				case 20:
-					{t.kind = 42; break loop;}
-				case 21:
-					{t.kind = 45; break loop;}
-				case 22:
 					{t.kind = 46; break loop;}
+				case 21:
+					{t.kind = 49; break loop;}
+				case 22:
+					{t.kind = 50; break loop;}
 				case 23:
 					recEnd = pos; recKind = 13;
 					if (ch == '=') {AddCh(); state = 18; break;}
 					else {t.kind = 13; break loop;}
 				case 24:
-					recEnd = pos; recKind = 43;
+					recEnd = pos; recKind = 47;
 					if (ch == '=') {AddCh(); state = 21; break;}
-					else {t.kind = 43; break loop;}
+					else {t.kind = 47; break loop;}
 				case 25:
-					recEnd = pos; recKind = 44;
+					recEnd = pos; recKind = 48;
 					if (ch == '=') {AddCh(); state = 22; break;}
-					else {t.kind = 44; break loop;}
+					else {t.kind = 48; break loop;}
 
 			}
 		}

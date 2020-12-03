@@ -2,7 +2,7 @@ algoritmo comparacaoAlgosOrdenacao
 constante TAM = 10;
 constante VELOCIDADE = 60;
 constante ACELERACAO = 20;
-
+    
 procedimento imprime(v: inteiro[])
 inicio
 fim
@@ -116,4 +116,13 @@ inicio
     v = novo inteiro[123];
     a = novo inteiro {1, 2, 3, 4, 5,6, 7};
     umaVarBolada = novo inteiro[tamanho(v)-1];
+
+    se a == 0 entao
+        se a < 5 entao
+            a = 5;
+        fimse;
+    senao
+        c = 1;
+    fimse;
+
 fim

@@ -10,26 +10,93 @@ import java.util.ArrayList;
  * Sun Nov, 15, 2020
  */
 
-class SemanticAnalyzerAndHtmlTransformer {
-    ArrayList<String> inputWords;
-    ArrayList<String> placeHolders;
+class HtmlTransformer {
+    //ArrayList<String> inputWords;
     String line;
-    String outputString;
+	String html;
+	FileWriter writer;
+	static String htmlCssRef = "<link href=\"style.css\" rel=\"stylesheet\">";
+	static String marginLeftProp = "margin-left:";
 
-    public SemanticAnalyzerAndHtmlTransformer() {
-        this.line = "";
-        this.outputString = "";
-        this.inputWords = new ArrayList();
-        this.placeHolders = new ArrayList();
-    }
+	static String classComments = "comments";
+	static String classType = "types";
+	static String classFunc = "funcs";
+	static String classBlock = "blocks";
+	static int identation = 0;
+	static int baseOffsetIdentation = 10; // 10px
 
-    public void debugln(String s) {
+    public HtmlTransformer() {
+		try {
+			this.line = "";
+			this.html = "<html><head>" + htmlCssRef + "<title>uPortugol</title></head><body>";
+			this.writer = new FileWriter("uPortugol.html");
+		} catch(IOException e) {
+			System.out.println("Falha ao abrir/criar o arquivo html " + e.getMessage());
+		}
+	}
+
+
+	public void newLine() { 
+		int i = 0;
+
+		while( i < identation) {
+			i += 5;
+		}
+		this.html += "<p style=" + "\"" + marginLeftProp + i + "px;\">";
+	}
+
+	public void identNewLine() {
+		identation += baseOffsetIdentation;
+		this.newLine();
+	}
+
+	public void closeNewLine() { this.html += "</p>"; }
+
+	public void exdentNewLine() {
+		identation-= baseOffsetIdentation;
+		this.newLine();
+	}
+
+	
+	public void append(String genericStrToappend) {
+		this.html += genericStrToappend;
+	}
+	/**
+	 * Stylize "procedimento $procedureName"
+	 */
+	public void procedureName(String procedureName) {
+		String tagSpan = this.getOpeningSpan(classFunc);
+		String tagSpanClosing = this.getClosingSpan();
+		this.html += tagSpan + "procedimento " +  procedureName + tagSpanClosing;
+	}
+
+	public String getOpeningSpan(String styleClass) {
+		return "<span " + "class=\"" + styleClass + "\">";
+	}
+	
+	public String getClosingSpan() {
+		return "</span>";
+	}
+	
+	public void finish() {
+		try {
+			this.html += "</body></html>";
+			this.writer.write(this.html);
+			this.writer.close();
+			System.out.println("O arquivo foi gravado com sucesso!");
+		} catch(IOException e) {
+			System.out.println("Falha ao salvar o arquivo html " + e.getMessage());
+		}
+
+	}
+
+	public void debugln(String s) {
         System.out.println(s);
     }
-    public void debug(String s) {
-        System.out.print(s + " ");
-    }
 
+	public void debug(String s) {
+        System.out.print(s + " ");
+	}
 }
 
 
@@ -39,7 +106,7 @@ public class Parser {
 	public static final int _ident = 1;
 	public static final int _number = 2;
 	public static final int _constantNumber = 3;
-	public static final int maxT = 47;
+	public static final int maxT = 51;
 
 	static final boolean T = true;
 	static final boolean x = false;
@@ -52,7 +119,7 @@ public class Parser {
 	public Scanner scanner;
 	public Errors errors;
 
-	SemanticAnalyzerAndHtmlTransformer handler = new SemanticAnalyzerAndHtmlTransformer();
+	HtmlTransformer handler = new HtmlTransformer();
 
 
 
@@ -120,10 +187,10 @@ public class Parser {
 			Get();
 			Expect(1);
 		}
-		while (la.kind == 35) {
+		while (la.kind == 39) {
 			ConstantDeclaration();
 		}
-		while (la.kind == 26) {
+		while (la.kind == 30) {
 			Procedure();
 		}
 		Expect(5);
@@ -131,11 +198,12 @@ public class Parser {
 			Cmd();
 		}
 		Expect(6);
+		handler.finish(); 
 	}
 
 	void ConstantDeclaration() {
 		String declaredConstant = ""; 
-		Expect(35);
+		Expect(39);
 		declaredConstant = Constant();
 		Expect(13);
 		Expect(2);
@@ -147,24 +215,29 @@ public class Parser {
 		String varDecl = ""; 
 		ProcedureDeclaration();
 		Expect(5);
-		while (la.kind == 34) {
+		handler.identNewLine(); handler.append("inicio"); handler.closeNewLine(); 
+		while (la.kind == 38) {
 			varDecl = VariableDeclaration();
 		}
 		Expect(6);
+		handler.newLine();
+		handler.append("fim"); handler.closeNewLine();
+		handler.exdentNewLine();
+		
 	}
 
 	void Cmd() {
 		String varDeclaration = ""; 
 		switch (la.kind) {
-		case 23: {
+		case 27: {
 			Read();
 			break;
 		}
-		case 1: case 2: case 3: case 24: case 37: {
+		case 1: case 2: case 3: case 28: case 41: {
 			Instruction();
 			break;
 		}
-		case 34: {
+		case 38: {
 			varDeclaration = VariableDeclaration();
 			break;
 		}
@@ -232,18 +305,37 @@ public class Parser {
 			Expect(22);
 			break;
 		}
-		default: SynErr(48); break;
+		case 23: {
+			Get();
+			Expr();
+			Expect(24);
+			Cmd();
+			while (StartOf(1)) {
+				Cmd();
+			}
+			if (la.kind == 25) {
+				Get();
+				Cmd();
+				while (StartOf(1)) {
+					Cmd();
+				}
+			}
+			Expect(26);
+			Expect(22);
+			break;
+		}
+		default: SynErr(52); break;
 		}
 	}
 
 	void Read() {
 		String readFromKeyboard = ""; 
-		Expect(23);
+		Expect(27);
 		handler.debug(t.val); 
-		Expect(24);
+		Expect(28);
 		readFromKeyboard = Variable();
 		handler.debug(readFromKeyboard); 
-		Expect(25);
+		Expect(29);
 		Expect(22);
 	}
 
@@ -254,9 +346,9 @@ public class Parser {
 			Get();
 			if (StartOf(2)) {
 				Expr();
-			} else if (la.kind == 31) {
+			} else if (la.kind == 35) {
 				newInteger = NewInteger();
-			} else SynErr(49);
+			} else SynErr(53);
 		}
 		Expect(22);
 	}
@@ -264,17 +356,17 @@ public class Parser {
 	String  VariableDeclaration() {
 		String  declaration;
 		String var = ""; 
-		Expect(34);
+		Expect(38);
 		var = Variable();
-		while (la.kind == 27) {
+		while (la.kind == 31) {
 			Get();
 			var = Variable();
 		}
 		Expect(19);
-		Expect(28);
-		if (la.kind == 29) {
+		Expect(32);
+		if (la.kind == 33) {
 			Get();
-			Expect(30);
+			Expect(34);
 		}
 		Expect(22);
 		declaration = t.val; 
@@ -291,21 +383,21 @@ public class Parser {
 
 	String  NewInteger() {
 		String  newInt;
-		Expect(31);
-		Expect(28);
-		if (la.kind == 29) {
+		Expect(35);
+		Expect(32);
+		if (la.kind == 33) {
 			Get();
 			Expr();
-			Expect(30);
-		} else if (la.kind == 32) {
+			Expect(34);
+		} else if (la.kind == 36) {
 			Get();
 			Expect(2);
-			while (la.kind == 27) {
+			while (la.kind == 31) {
 				Get();
 				Expect(2);
 			}
-			Expect(33);
-		} else SynErr(50);
+			Expect(37);
+		} else SynErr(54);
 		newInt = t.val; 
 		return newInt;
 	}
@@ -318,23 +410,27 @@ public class Parser {
 	}
 
 	void ProcedureDeclaration() {
-		Expect(26);
+		Expect(30);
+		handler.newLine(); 
 		Expect(1);
-		handler.debug(t.val); 
-		Expect(24);
+		handler.procedureName(t.val); 
+		Expect(28);
+		handler.append("("); 
 		if (la.kind == 1) {
 			ProcedureParams();
-			while (la.kind == 27) {
+			while (la.kind == 31) {
 				Get();
 				ProcedureParams();
 			}
 		}
-		Expect(25);
+		Expect(29);
+		handler.append(")"); 
 		if (la.kind == 19) {
 			Get();
-			Expect(28);
+			Expect(32);
+			handler.append(": inteiro"); 
 		}
-		
+		handler.closeNewLine(); 
 	}
 
 	void ProcedureParams() {
@@ -342,10 +438,10 @@ public class Parser {
 		paramName = Variable();
 		
 		Expect(19);
-		Expect(28);
-		if (la.kind == 29) {
+		Expect(32);
+		if (la.kind == 33) {
 			Get();
-			Expect(30);
+			Expect(34);
 		}
 	}
 
@@ -358,8 +454,8 @@ public class Parser {
 
 	void AriExpr() {
 		Term();
-		while (la.kind == 36 || la.kind == 37) {
-			if (la.kind == 36) {
+		while (la.kind == 40 || la.kind == 41) {
+			if (la.kind == 40) {
 				Get();
 			} else {
 				Get();
@@ -370,22 +466,6 @@ public class Parser {
 
 	void RelOp() {
 		switch (la.kind) {
-		case 41: {
-			Get();
-			break;
-		}
-		case 42: {
-			Get();
-			break;
-		}
-		case 43: {
-			Get();
-			break;
-		}
-		case 44: {
-			Get();
-			break;
-		}
 		case 45: {
 			Get();
 			break;
@@ -394,16 +474,32 @@ public class Parser {
 			Get();
 			break;
 		}
-		default: SynErr(51); break;
+		case 47: {
+			Get();
+			break;
+		}
+		case 48: {
+			Get();
+			break;
+		}
+		case 49: {
+			Get();
+			break;
+		}
+		case 50: {
+			Get();
+			break;
+		}
+		default: SynErr(55); break;
 		}
 	}
 
 	void Term() {
 		Fator();
-		while (la.kind == 38 || la.kind == 39 || la.kind == 40) {
-			if (la.kind == 38) {
+		while (la.kind == 42 || la.kind == 43 || la.kind == 44) {
+			if (la.kind == 42) {
 				Get();
-			} else if (la.kind == 39) {
+			} else if (la.kind == 43) {
 				Get();
 			} else {
 				Get();
@@ -418,38 +514,38 @@ public class Parser {
 			Name();
 		} else if (la.kind == 2) {
 			Get();
-		} else if (la.kind == 37) {
+		} else if (la.kind == 41) {
 			Get();
 			Fator();
-		} else if (la.kind == 24) {
+		} else if (la.kind == 28) {
 			Get();
 			Expr();
-			Expect(25);
+			Expect(29);
 		} else if (la.kind == 3) {
 			cons = Constant();
-		} else SynErr(52);
+		} else SynErr(56);
 	}
 
 	void Name() {
 		Expect(1);
-		if (la.kind == 24 || la.kind == 29) {
-			if (la.kind == 24) {
+		if (la.kind == 28 || la.kind == 33) {
+			if (la.kind == 28) {
 				Get();
 				if (StartOf(2)) {
 					ArgList();
 				}
-				Expect(25);
+				Expect(29);
 			} else {
 				Get();
 				Expr();
-				Expect(30);
+				Expect(34);
 			}
 		}
 	}
 
 	void ArgList() {
 		Expr();
-		while (la.kind == 27) {
+		while (la.kind == 31) {
 			Get();
 			Expr();
 		}
@@ -467,10 +563,10 @@ public class Parser {
 	}
 
 	private static final boolean[][] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, x,x,x,T, x,x,T,x, T,x,x,x, T,x,x,x, x,T,x,T, T,x,x,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,x, x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, x,x,x,T, x,x,T,x, T,x,x,x, T,x,x,x, x,T,x,T, x,x,x,T, T,x,x,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,x, x}
 
 	};
 } // end Parser
@@ -518,36 +614,40 @@ class Errors {
 			case 20: s = "\"fimcaso\" expected"; break;
 			case 21: s = "\"retorne\" expected"; break;
 			case 22: s = "\";\" expected"; break;
-			case 23: s = "\"leia\" expected"; break;
-			case 24: s = "\"(\" expected"; break;
-			case 25: s = "\")\" expected"; break;
-			case 26: s = "\"procedimento\" expected"; break;
-			case 27: s = "\",\" expected"; break;
-			case 28: s = "\"inteiro\" expected"; break;
-			case 29: s = "\"[\" expected"; break;
-			case 30: s = "\"]\" expected"; break;
-			case 31: s = "\"novo\" expected"; break;
-			case 32: s = "\"{\" expected"; break;
-			case 33: s = "\"}\" expected"; break;
-			case 34: s = "\"variavel\" expected"; break;
-			case 35: s = "\"constante\" expected"; break;
-			case 36: s = "\"+\" expected"; break;
-			case 37: s = "\"-\" expected"; break;
-			case 38: s = "\"*\" expected"; break;
-			case 39: s = "\"/\" expected"; break;
-			case 40: s = "\"%\" expected"; break;
-			case 41: s = "\"==\" expected"; break;
-			case 42: s = "\"!=\" expected"; break;
-			case 43: s = "\"<\" expected"; break;
-			case 44: s = "\">\" expected"; break;
-			case 45: s = "\"<=\" expected"; break;
-			case 46: s = "\">=\" expected"; break;
-			case 47: s = "??? expected"; break;
-			case 48: s = "invalid Cmd"; break;
-			case 49: s = "invalid Instruction"; break;
-			case 50: s = "invalid NewInteger"; break;
-			case 51: s = "invalid RelOp"; break;
-			case 52: s = "invalid Fator"; break;
+			case 23: s = "\"se\" expected"; break;
+			case 24: s = "\"entao\" expected"; break;
+			case 25: s = "\"senao\" expected"; break;
+			case 26: s = "\"fimse\" expected"; break;
+			case 27: s = "\"leia\" expected"; break;
+			case 28: s = "\"(\" expected"; break;
+			case 29: s = "\")\" expected"; break;
+			case 30: s = "\"procedimento\" expected"; break;
+			case 31: s = "\",\" expected"; break;
+			case 32: s = "\"inteiro\" expected"; break;
+			case 33: s = "\"[\" expected"; break;
+			case 34: s = "\"]\" expected"; break;
+			case 35: s = "\"novo\" expected"; break;
+			case 36: s = "\"{\" expected"; break;
+			case 37: s = "\"}\" expected"; break;
+			case 38: s = "\"variavel\" expected"; break;
+			case 39: s = "\"constante\" expected"; break;
+			case 40: s = "\"+\" expected"; break;
+			case 41: s = "\"-\" expected"; break;
+			case 42: s = "\"*\" expected"; break;
+			case 43: s = "\"/\" expected"; break;
+			case 44: s = "\"%\" expected"; break;
+			case 45: s = "\"==\" expected"; break;
+			case 46: s = "\"!=\" expected"; break;
+			case 47: s = "\"<\" expected"; break;
+			case 48: s = "\">\" expected"; break;
+			case 49: s = "\"<=\" expected"; break;
+			case 50: s = "\">=\" expected"; break;
+			case 51: s = "??? expected"; break;
+			case 52: s = "invalid Cmd"; break;
+			case 53: s = "invalid Instruction"; break;
+			case 54: s = "invalid NewInteger"; break;
+			case 55: s = "invalid RelOp"; break;
+			case 56: s = "invalid Fator"; break;
 			default: s = "error " + n; break;
 		}
 		printMsg(line, col, s);
