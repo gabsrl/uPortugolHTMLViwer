@@ -22,6 +22,8 @@ inicio
 fim
 
 inicio
+    variavel j, min, minj: inteiro;
+    variavel a, b, cOutra: inteiro[];
     leia(lendoM);
     leia(lendoN);
     leia(lendoOPQ);
@@ -44,4 +46,69 @@ inicio
     20 < COTG;
     20 <= COS;
     40 == tamanho(vetor);
+    
+    variavel j, min, minj: inteiro;
+    variavel a, b, cOutra: inteiro[];
+
+    enquanto a < TAM faca
+        a = a + 1;
+        quarentena = funcao();
+        v[a] = a;
+        ola > oi;
+        enquanto b < TAM -1 faca
+            variavel j, min, minj: inteiro;
+            variavel a, b, cOutra: inteiro[];
+            b = b + 1;
+        fimenquanto
+    fimenquanto
+
+    repita
+        a = a + 1;
+        quarentena = funcao();
+        v[a] = a;
+        ola > oi;
+        enquanto outroLoop > LOOPTAM faca
+            c = c+1;
+            caso outroCarro
+                outrocaso:
+                    funcao();
+            fimcaso
+        fimenquanto
+    ate a == TAM;    
+
+    para i = 0 ate TAM -1 passo 2 faca
+        a = a + i;
+        repita
+            a = a + 1;
+            quarentena = funcao();
+            v[a] = a;
+            ola > oi;
+            enquanto outroLoop > LOOPTAM faca
+                c = c+1;
+                funcaoChamadaAqui();
+                outraAqui(12, varMy);
+            fimenquanto
+        ate a == TAM;
+    fimpara
+    
+    caso oEscolhido
+        seja 1 faca
+            funcao();
+            execucoes();
+            atribuicao = 1 + tamanho(v) * (5 + 3);
+        seja 2 faca
+            funcao();
+            execucoes();
+            atribuicao = 1 + tamanho(v) * (5 + 3);
+        seja 3 faca
+            variavel j, min, minj: inteiro;
+            variavel a, b, cOutra: inteiro[];
+            funcao();
+            execucoes();
+            atribuicao = 1 + tamanho(v) * (5 + 3);
+        outrocaso:
+            funcao();
+            execucoes();
+            atribuicao = 1 + tamanho(v) * (5 + 3);
+    fimcaso
 fim

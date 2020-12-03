@@ -57,8 +57,15 @@ PRODUCTIONS
 		"fim"
     .
 
-	Cmd = 		Read
-			| 	Instruction 
+	Cmd												(. String varDeclaration = ""; .)
+	= 																	
+			Read
+			| 	Instruction
+			|	VariableDeclaration <out varDeclaration>
+			|	"enquanto"	Expr "faca" { Cmd } "fimenquanto"
+			|	"repita" Cmd { Cmd } "ate" Instruction
+			|	"para" Expr "=" Expr "ate" Expr "passo" number "faca" Cmd { Cmd } "fimpara"
+			|	"caso" ident { "seja" number "faca"  Cmd { Cmd } } "outrocaso" ":" Cmd { Cmd } "fimcaso"
 	.
 	Instruction = Expr ["=" Expr ]";".
 
