@@ -283,8 +283,8 @@ public class Scanner {
 		start.set(58, 4); 
 		start.set(59, 5); 
 		start.set(40, 6); 
-		start.set(41, 7); 
-		start.set(44, 8); 
+		start.set(44, 7); 
+		start.set(41, 8); 
 		start.set(91, 9); 
 		start.set(93, 10); 
 		start.set(123, 11); 
@@ -318,9 +318,9 @@ public class Scanner {
 		literals.put("entao", new Integer(24));
 		literals.put("senao", new Integer(25));
 		literals.put("fimse", new Integer(26));
-		literals.put("leia", new Integer(27));
-		literals.put("procedimento", new Integer(30));
-		literals.put("inteiro", new Integer(32));
+		literals.put("procedimento", new Integer(27));
+		literals.put("inteiro", new Integer(31));
+		literals.put("leia", new Integer(34));
 		literals.put("novo", new Integer(35));
 		literals.put("variavel", new Integer(38));
 		literals.put("constante", new Integer(39));
@@ -435,11 +435,11 @@ public class Scanner {
 				case 7:
 					{t.kind = 29; break loop;}
 				case 8:
-					{t.kind = 31; break loop;}
+					{t.kind = 30; break loop;}
 				case 9:
-					{t.kind = 33; break loop;}
+					{t.kind = 32; break loop;}
 				case 10:
-					{t.kind = 34; break loop;}
+					{t.kind = 33; break loop;}
 				case 11:
 					{t.kind = 36; break loop;}
 				case 12:

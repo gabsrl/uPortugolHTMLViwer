@@ -125,7 +125,10 @@ PRODUCTIONS
 			Procedure
 		}
 		"inicio"
-			{ Cmd }
+			Cmd
+				{ 
+					Cmd 
+				}
 		"fim"										(. handler.finish(); .)
     .
 
@@ -150,22 +153,15 @@ PRODUCTIONS
 	] ";".
 
 
-    Read    									(. String readFromKeyboard = ""; .)
-    = "leia"									(. handler.debug(t.val); .)
-        "(" 
-            Variable<out readFromKeyboard> 		(. handler.debug(readFromKeyboard); .)
-        ")" ";" 
-    .
-
-	Procedure									(. String varDecl = ""; .)
+	Procedure										(. String varDecl = ""; .)
 	= ProcedureDeclaration
-		"inicio" 								(. handler.identNewLine(); handler.append("inicio"); handler.closeNewLine(); .)
+		"inicio" 									(. handler.identNewLine(); handler.append("inicio"); handler.closeNewLine(); .)
 			{								
 				VariableDeclaration<out varDecl>
 			 } "fim"								(. 
-														handler.newLine();
+														handler.newLine(); // criando uma linha com a indentação existente
 														handler.append("fim"); handler.closeNewLine();
-														handler.exdentNewLine();
+														handler.exdentNewLine(); // decrementando a indentação. "Limpando estado"
 													.)
 	.
 
@@ -192,6 +188,13 @@ PRODUCTIONS
 			[
 				"[" "]"
 			]
+    .
+
+    Read    									(. String readFromKeyboard = ""; .)
+    = "leia"									(. handler.debug(t.val); .)
+        "(" 
+            Variable<out readFromKeyboard> 		(. handler.debug(readFromKeyboard); .)
+        ")" ";" 
     .
 
 	NewInteger<out String newInt> 

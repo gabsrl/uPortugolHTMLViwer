@@ -190,10 +190,11 @@ public class Parser {
 		while (la.kind == 39) {
 			ConstantDeclaration();
 		}
-		while (la.kind == 30) {
+		while (la.kind == 27) {
 			Procedure();
 		}
 		Expect(5);
+		Cmd();
 		while (StartOf(1)) {
 			Cmd();
 		}
@@ -220,16 +221,16 @@ public class Parser {
 			varDecl = VariableDeclaration();
 		}
 		Expect(6);
-		handler.newLine();
+		handler.newLine(); // criando uma linha com a indentaÃ§Ã£o existente
 		handler.append("fim"); handler.closeNewLine();
-		handler.exdentNewLine();
+		handler.exdentNewLine(); // decrementando a indentaÃ§Ã£o. "Limpando estado"
 		
 	}
 
 	void Cmd() {
 		String varDeclaration = ""; 
 		switch (la.kind) {
-		case 27: {
+		case 34: {
 			Read();
 			break;
 		}
@@ -330,12 +331,12 @@ public class Parser {
 
 	void Read() {
 		String readFromKeyboard = ""; 
-		Expect(27);
+		Expect(34);
 		handler.debug(t.val); 
 		Expect(28);
 		readFromKeyboard = Variable();
 		handler.debug(readFromKeyboard); 
-		Expect(29);
+		Expect(30);
 		Expect(22);
 	}
 
@@ -358,15 +359,15 @@ public class Parser {
 		String var = ""; 
 		Expect(38);
 		var = Variable();
-		while (la.kind == 31) {
+		while (la.kind == 29) {
 			Get();
 			var = Variable();
 		}
 		Expect(19);
-		Expect(32);
-		if (la.kind == 33) {
+		Expect(31);
+		if (la.kind == 32) {
 			Get();
-			Expect(34);
+			Expect(33);
 		}
 		Expect(22);
 		declaration = t.val; 
@@ -384,15 +385,15 @@ public class Parser {
 	String  NewInteger() {
 		String  newInt;
 		Expect(35);
-		Expect(32);
-		if (la.kind == 33) {
+		Expect(31);
+		if (la.kind == 32) {
 			Get();
 			Expr();
-			Expect(34);
+			Expect(33);
 		} else if (la.kind == 36) {
 			Get();
 			Expect(2);
-			while (la.kind == 31) {
+			while (la.kind == 29) {
 				Get();
 				Expect(2);
 			}
@@ -402,15 +403,8 @@ public class Parser {
 		return newInt;
 	}
 
-	String  Variable() {
-		String  var;
-		Expect(1);
-		handler.debug(t.val); var = t.val; 
-		return var;
-	}
-
 	void ProcedureDeclaration() {
-		Expect(30);
+		Expect(27);
 		handler.newLine(); 
 		Expect(1);
 		handler.procedureName(t.val); 
@@ -418,16 +412,16 @@ public class Parser {
 		handler.append("("); 
 		if (la.kind == 1) {
 			ProcedureParams();
-			while (la.kind == 31) {
+			while (la.kind == 29) {
 				Get();
 				ProcedureParams();
 			}
 		}
-		Expect(29);
+		Expect(30);
 		handler.append(")"); 
 		if (la.kind == 19) {
 			Get();
-			Expect(32);
+			Expect(31);
 			handler.append(": inteiro"); 
 		}
 		handler.closeNewLine(); 
@@ -438,11 +432,18 @@ public class Parser {
 		paramName = Variable();
 		
 		Expect(19);
-		Expect(32);
-		if (la.kind == 33) {
+		Expect(31);
+		if (la.kind == 32) {
 			Get();
-			Expect(34);
+			Expect(33);
 		}
+	}
+
+	String  Variable() {
+		String  var;
+		Expect(1);
+		handler.debug(t.val); var = t.val; 
+		return var;
 	}
 
 	String  Constant() {
@@ -520,7 +521,7 @@ public class Parser {
 		} else if (la.kind == 28) {
 			Get();
 			Expr();
-			Expect(29);
+			Expect(30);
 		} else if (la.kind == 3) {
 			cons = Constant();
 		} else SynErr(56);
@@ -528,24 +529,24 @@ public class Parser {
 
 	void Name() {
 		Expect(1);
-		if (la.kind == 28 || la.kind == 33) {
+		if (la.kind == 28 || la.kind == 32) {
 			if (la.kind == 28) {
 				Get();
 				if (StartOf(2)) {
 					ArgList();
 				}
-				Expect(29);
+				Expect(30);
 			} else {
 				Get();
 				Expr();
-				Expect(34);
+				Expect(33);
 			}
 		}
 	}
 
 	void ArgList() {
 		Expr();
-		while (la.kind == 31) {
+		while (la.kind == 29) {
 			Get();
 			Expr();
 		}
@@ -564,7 +565,7 @@ public class Parser {
 
 	private static final boolean[][] set = {
 		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, x,x,x,T, x,x,T,x, T,x,x,x, T,x,x,x, x,T,x,T, x,x,x,T, T,x,x,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,T, x,x,x,T, x,x,T,x, T,x,x,x, T,x,x,x, x,T,x,T, x,x,x,x, T,x,x,x, x,x,T,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
 		{x,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,x, x}
 
@@ -618,14 +619,14 @@ class Errors {
 			case 24: s = "\"entao\" expected"; break;
 			case 25: s = "\"senao\" expected"; break;
 			case 26: s = "\"fimse\" expected"; break;
-			case 27: s = "\"leia\" expected"; break;
+			case 27: s = "\"procedimento\" expected"; break;
 			case 28: s = "\"(\" expected"; break;
-			case 29: s = "\")\" expected"; break;
-			case 30: s = "\"procedimento\" expected"; break;
-			case 31: s = "\",\" expected"; break;
-			case 32: s = "\"inteiro\" expected"; break;
-			case 33: s = "\"[\" expected"; break;
-			case 34: s = "\"]\" expected"; break;
+			case 29: s = "\",\" expected"; break;
+			case 30: s = "\")\" expected"; break;
+			case 31: s = "\"inteiro\" expected"; break;
+			case 32: s = "\"[\" expected"; break;
+			case 33: s = "\"]\" expected"; break;
+			case 34: s = "\"leia\" expected"; break;
 			case 35: s = "\"novo\" expected"; break;
 			case 36: s = "\"{\" expected"; break;
 			case 37: s = "\"}\" expected"; break;
