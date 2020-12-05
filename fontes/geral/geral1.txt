@@ -5,11 +5,12 @@ constante ACELERACAO = 20;
 
 procedimento imprime(v: inteiro[])
 inicio
-
+    algumacoisaaqui();
 fim
 
 procedimento copia(v1: inteiro[], v2: inteiro[], numeroTam1: inteiro): inteiro
 inicio
+    1+1;
 fim
 
 procedimento troque(v: inteiro[], i: inteiro, j: inteiro)

@@ -21,7 +21,7 @@ class HtmlTransformer {
 	static String classFunc = "funcs";
 	static String classBlock = "blocks";
 	static int identation = 0;
-	static int baseOffsetIdentation = 10; // 10px
+	static int baseOffsetIdentation = 20; // 10px
 
     public HtmlTransformer() {
 		try {
@@ -40,7 +40,6 @@ class HtmlTransformer {
 	public void exdent() {
 		identation-= baseOffsetIdentation;
 	}
-
 
 	public void newLine() { 
 		int i = 0;
@@ -67,6 +66,13 @@ class HtmlTransformer {
 	public void append(String genericStrToappend) {
 		this.html += genericStrToappend;
 	}
+
+	public void append(String keyStr, String type) {
+		String tagSpan = this.getOpeningSpan(type);
+		String tagSpanClosing = this.getClosingSpan();
+		this.html += tagSpan + keyStr + tagSpanClosing;
+	}
+
 	/**
 	 * Stylize "procedimento $procedureName"
 	 */
@@ -131,60 +137,78 @@ IGNORE '\t' + '\r' + '\n'
 
 PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
-	= ["algoritmo" ident]
+	= [
+		"algoritmo"										
+		ident											(.
+															handler.newLine();
+															handler.append("algoritmo" + " ", HtmlTransformer.classType);
+															handler.append(t.val);
+															handler.closeNewLine();
+														.)
+	]
 		{ 
 			ConstantDeclaration 
 		} 
 		{ 
 			Procedure
 		}
-		"inicio"
+		"inicio"										(.	
+															handler.newLine();
+															handler.append("inicio", HtmlTransformer.classBlock);
+															handler.closeNewLine();
+															handler.indent();
+														.)
 			Cmd
 				{ 
 					Cmd 
 				}
-		"fim"												(. handler.finish(); .)
+		"fim"											(. 
+															handler.exdent();
+															handler.newLine();
+															handler.append("fim", HtmlTransformer.classBlock);
+															handler.finish(); 
+														.)
     .
 
 	Cmd														(. String varDeclaration = ""; .)
 	= 																	
 			Read
-			| 	Instruction
+			| 	(.	handler.newLine(); .) Instruction
 			|	VariableDeclaration <out varDeclaration>
 			|	"enquanto"									(. 
 																handler.newLine();
-																handler.append("enquanto");
+																handler.append("enquanto" + " ", HtmlTransformer.classBlock);
 															.)
 					Expr 									
 				"faca"										(. 
-																handler.append(" " + "faca");
+																handler.append(" " + "faca", HtmlTransformer.classBlock);
 																handler.closeNewLine();
 																handler.indent(); //adding new indent
 															.) 
 				{ 
-					Cmd 									(. handler.newLine(); handler.append("teste-enquanto"); handler.closeNewLine(); .)
+					Cmd
 				} 
 				"fimenquanto"								(.
 																handler.exdent();
 																handler.newLine();
-																handler.append("fimenquanto");
+																handler.append("fimenquanto", HtmlTransformer.classBlock);
 																handler.closeNewLine();
 															.)
 
 			|	"repita"									(.
 																handler.newLine();
-																handler.append("repita");
+																handler.append("repita", handler.classBlock);
 																handler.closeNewLine();
 																handler.indent();
 															.)	
-					Cmd 									(. handler.newLine(); handler.append("teste-repita"); handler.closeNewLine(); .)
+					Cmd
 					{ 
 						Cmd 
 					} 
 					"ate" 									(. 
 																handler.exdent();
 																handler.newLine();
-																handler.append("ate" +  " ");
+																handler.append("ate" +  " ", HtmlTransformer.classBlock);
 
 															.)
 					Instruction								(. 
@@ -193,27 +217,27 @@ PRODUCTIONS
 
 			|	"para"										(.
 																handler.newLine();
-																handler.append("para" + " ");
+																handler.append("para" + " ", HtmlTransformer.classBlock);
 															.)
 					Expr
-						"=" 
-					Expr 									(. handler.append("expr" + " "); .)
-				"ate" 										(. handler.append("ate" + " "); .)
-					Expr 									(. handler.append("expr" + " "); .)
-				"passo" 									(. handler.append("passo" + " "); .)
+						"=" 								(.	handler.append("=" + " "); .)
+					Expr
+				"ate" 										(. handler.append("ate" + " ", HtmlTransformer.classBlock); .)
+					Expr
+				"passo" 									(. handler.append("passo" + " ", HtmlTransformer.classBlock); .)
 					number 									(. handler.append(t.val + " "); .)
 				"faca"										(. 
-																handler.append("faca");
+																handler.append("faca", HtmlTransformer.classBlock);
 																handler.closeNewLine();
 																handler.indent();
 															.)
-					Cmd 									(. handler.newLine(); handler.append("para-teste-cmd"); handler.closeNewLine(); .)
+					Cmd
 					{ 
 						Cmd 
 					} "fimpara"								(. 
 																handler.exdent();
 																handler.newLine();
-																handler.append("fimpara");
+																handler.append("fimpara", HtmlTransformer.classBlock);
 																handler.closeNewLine();
 															.)
 
@@ -262,7 +286,7 @@ PRODUCTIONS
 
 			|	"retorne" 									(.	
 																handler.newLine();
-																handler.append("retorne" + " ");
+																handler.append("retorne" + " ", HtmlTransformer.classType);
 															.)
 					Expr 									(.	
 																handler.append("expr" + ";");
@@ -272,25 +296,25 @@ PRODUCTIONS
 
 			|	"se"										(.	
 																handler.newLine();
-																handler.append("se" + " ");
+																handler.append("se" + " ", HtmlTransformer.classBlock);
 															.)
-					Expr 									(.	handler.append("expr"+ " "); .)	
-				"entao"										(.	handler.append("entao"); 
+					Expr 										
+				"entao"										(.	handler.append("entao", HtmlTransformer.classBlock); 
 																handler.closeNewLine();
 																handler.indent();
 															.)
-					Cmd										(.	handler.debugHtml(); .)
+					Cmd
 					{ 
 						Cmd 
 					} 
 															(.	handler.exdent(); .)
 					[
 						"senao"								(.	handler.newLine();
-																handler.append("senao");
+																handler.append("senao", HtmlTransformer.classBlock);
 																handler.closeNewLine();
 																handler.indent();
 															.)
-							Cmd								(. handler.debugHtml(); .)
+							Cmd
 							{ 
 								Cmd 
 							} 
@@ -299,109 +323,156 @@ PRODUCTIONS
 															.)
 					] "fimse" ";"							(.
 																handler.newLine();
-																handler.append("fimse;");
+																handler.append("fimse", HtmlTransformer.classBlock);
+																handler.append(";");
 																handler.closeNewLine();
 															.)
 	.
 
 	Instruction (. String newInteger = ""; .)
-	= Expr [ "=" 
-		(Expr
-		| NewInteger<out newInteger>
-		) 
-	] ";".
+	= Expr 												
+		[ 
+			"="											(.	handler.append(" " + "=" + " "); .) 
+			(
+				Expr
+				| NewInteger<out newInteger>
+			) 
+		] ";"											(.	handler.append(";");
+															handler.closeNewLine(); 
+														.)
+	.
 
 
 	Procedure										(. String varDecl = ""; .)
 	= ProcedureDeclaration
 		"inicio" 									(. 
 														handler.identNewLine();  //creating new line with adjustments on indent
-														handler.append("inicio");
+														handler.append("inicio", HtmlTransformer.classBlock);
 														handler.closeNewLine(); 
+														handler.indent();
 													.)
-			{								
-				Cmd { Cmd }
-			} "fim"									(. 
+				Cmd
+				{ 
+					Cmd 
+				}									
+													(. handler.exdent(); .)	
+				"fim"								(. 
 														handler.newLine(); // criando uma linha com a indentação existente
-														handler.append("fim"); handler.closeNewLine();
+														handler.append("fim", HtmlTransformer.classBlock); 
+														handler.closeNewLine();
 														handler.exdentNewLine(); // decrementando a indentação. "Limpando estado"
 													.)
 	.
 
     ProcedureDeclaration
     = "procedimento"							(. handler.newLine(); .)
-        ident 									(. handler.procedureName(t.val); .)
+        ident 									(. handler.append("procedimento " + t.val, HtmlTransformer.classFunc); .)
         "("										(. handler.append("("); .)
             [
 				ProcedureParams
 				{
-					"," ProcedureParams 
+					","									(.	handler.append(", "); .) 
+					ProcedureParams 
 				} 
             ]
-		")"										(. handler.append(")"); .)
+		")"												(. handler.append(")"); .)
 			[
-				":" "inteiro"					(. handler.append(": inteiro"); .)
-			] 									(. handler.closeNewLine(); .)
+				":" "inteiro"							(. 
+															handler.append(":" + " ");
+															handler.append("inteiro", HtmlTransformer.classType);
+														.)
+			] 											(. handler.closeNewLine(); .)
     .
 
     ProcedureParams             		(. String paramName=""; .)
     = Variable<out paramName>        	(. .)
         ":"
-			"inteiro" 
+			"inteiro"									(.	
+															handler.append(":" + " ");
+															handler.append("inteiro", HtmlTransformer.classType); 
+														.) 
 			[
-				"[" "]"
+				"[" "]"									(.	handler.append("[]"); .)
 			]
     .
 
-    Read    									(. String readFromKeyboard = ""; .)
-    = "leia"									(. handler.debug(t.val); .)
-        "(" 
-            Variable<out readFromKeyboard> 		(. handler.debug(readFromKeyboard); .)
-        ")" ";" 
+    Read    											(. String readFromKeyboard = ""; .)
+	= "leia"											(.	
+															handler.newLine();
+															handler.append("leia", HtmlTransformer.classFunc); 
+														.)
+        "(" 											(.	handler.append("("); .)
+            Variable<out readFromKeyboard> 		
+		")" ";" 										(.	
+															handler.append(");");
+															handler.closeNewLine();
+														.)
     .
 
 	NewInteger<out String newInt> 
-	= "novo" "inteiro" 
+	= "novo" "inteiro" 									(.	handler.append("novo inteiro"); .)
 		( 
-			"[" 
+			"[" 										(.	handler.append("["); .)
 				Expr 
-			"]"
+			"]"											(.	handler.append("]"); .)
 			| 
-			"{" 
-				number 
+			"{" 										(.	handler.append(" " + "{"); .)
+				number 									(.	handler.append(t.val); .)
 				{ 
-					"," number 
+					"," number 							(.	handler.append("," + " " + t.val); .)
 				} 
-			"}"
+			"}"											(.	handler.append("}"); .)
     	) (. newInt = t.val; .)
     .
 
-    VariableDeclaration<out String declaration> 					(. String var = ""; .)
-    	= "variavel" Variable<out var> 									
+    VariableDeclaration<out String declaration> 		(.	String var = ""; .)
+		= "variavel"									(.
+															handler.newLine();
+															handler.append("variavel" + " "); 
+														.)
+			Variable<out var>														
         	{
-            	"," Variable<out var> 									
+				","										(.	handler.append(", "); .) 
+				Variable<out var> 									
 			} ":" 
-
-			"inteiro" 
+			"inteiro" 									(.	
+															handler.append(" "+ ":" + " ");
+															handler.append("inteiro", HtmlTransformer.classType);
+														.)
 			[
-				"[" "]"
+				"[" "]"									(.	handler.append("[]"); .)
 			]
 			
-		";" 														(. declaration = t.val; .)
+		";" 											(.	
+															handler.append(";");
+															handler.closeNewLine();
+															declaration = t.val;
+														.)
     .
 
     Variable<out String var>
-    =  ident (. handler.debug(t.val); var = t.val; .)
+	=  ident 											(. 
+															handler.append(t.val);
+															var = t.val;
+														.)
 	.
 
-	ConstantDeclaration									(. String declaredConstant = ""; .)
-	= "constante" Constant<out declaredConstant>
-			"=" number 									(. handler.debugln(t.val); .)
-		";"
+	ConstantDeclaration									(.	String declaredConstant = ""; .)
+	= "constante" 										(.	
+															handler.newLine();
+															handler.append("constante" + " ", HtmlTransformer.classType); 
+														.)
+		Constant<out declaredConstant>
+			"=" 										(.	handler.append(" " + "=" + " "); .)
+		number 											(.	handler.append(t.val); .)
+		";"												(.	
+															handler.append(";");
+															handler.closeNewLine(); 
+														.)
 	.
 
 	Constant<out String constant>
-	= constantNumber (. handler.debug(t.val); constant = t.val; .)
+	= constantNumber (. handler.append(t.val); constant = t.val; .)
 	.
 	
 	Expr
@@ -416,8 +487,8 @@ PRODUCTIONS
 	= Term
 		{
 			(
-				"+"
-				| "-"
+				"+"										(.	handler.append(" " + "+" + " "); .)
+				| "-"									(.	handler.append(" " + "-" + " "); .)
 			)
 			Term
 		}
@@ -428,9 +499,9 @@ PRODUCTIONS
 	= Fator
 		{
 			(
-				"*"
-				| "/"
-				| "%"
+				"*"										(.	handler.append(" " + "*" + " "); .)
+				| "/"									(.	handler.append(" " + "/" + " "); .)
+				| "%"									(.	handler.append(" " + "%" + " "); .)
 			)
 			Fator
 		}
@@ -438,29 +509,48 @@ PRODUCTIONS
 
 	Fator (. String cons = ""; .)
 	= Name
-		| number
-		| "-" Fator
-		| 	"("
+		| number										(.	handler.append(t.val); .)
+		| "-"											(.	handler.append("-"); .) 
+			Fator
+		| 	"("											(.	handler.append("("); .)
 				Expr 
-			")"
+			")"											(.	handler.append(")"); .)
 		| Constant<out cons>
 	.
 
 	Name
-	= ident [ "("  [ ArgList ] ")" | "[" Expr "]" ]
+	= 
+	ident												(.	
+															if(la.val.equals("("))
+																handler.append(t.val, HtmlTransformer.classFunc);
+															else handler.append(t.val);
+														.)
+		[ 
+			"("											(.	handler.append("("); .)
+			[ 
+				ArgList 
+			] 
+			")" 										(.	handler.append(")"); .)
+		| 
+			"[" 										(.	handler.append("["); .)
+				Expr 
+			"]" 										(.	handler.append("]"); .)
+		]
 	.
 
 	ArgList
-	= Expr { "," Expr }
+	= Expr { 
+		","												(.	handler.append("," + " "); .) 
+	Expr }
 	.
 	
 	RelOp
-	= "=="
-		|"!="
-		| "<"
-		| ">" 
-		| "<="
-		| ">="
+	= "=="												(.	handler.append(" " + "==" + " "); .)
+		|"!="											(.	handler.append(" " + "!=" + " "); .)
+		| "<"											(.	handler.append(" " + "<" + " "); .)
+		| ">" 											(.	handler.append(" " + ">" + " "); .)
+		| "<="											(.	handler.append(" " + "<=" + " "); .)
+		| ">="											(.	handler.append(" " + ">=" + " "); .)
 	.
 
 END UPortugol.

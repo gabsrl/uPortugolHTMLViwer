@@ -23,7 +23,7 @@ class HtmlTransformer {
 	static String classFunc = "funcs";
 	static String classBlock = "blocks";
 	static int identation = 0;
-	static int baseOffsetIdentation = 10; // 10px
+	static int baseOffsetIdentation = 20; // 10px
 
     public HtmlTransformer() {
 		try {
@@ -69,6 +69,13 @@ class HtmlTransformer {
 	public void append(String genericStrToappend) {
 		this.html += genericStrToappend;
 	}
+
+	public void append(String keyStr, String type) {
+		String tagSpan = this.getOpeningSpan(type);
+		String tagSpanClosing = this.getClosingSpan();
+		this.html += tagSpan + keyStr + tagSpanClosing;
+	}
+
 	/**
 	 * Stylize "procedimento $procedureName"
 	 */
@@ -200,6 +207,11 @@ public class Parser {
 		if (la.kind == 4) {
 			Get();
 			Expect(1);
+			handler.newLine();
+			handler.append("algoritmo" + " ", HtmlTransformer.classType);
+			handler.append(t.val);
+			handler.closeNewLine();
+			
 		}
 		while (la.kind == 39) {
 			ConstantDeclaration();
@@ -208,22 +220,38 @@ public class Parser {
 			Procedure();
 		}
 		Expect(5);
+		handler.newLine();
+		handler.append("inicio", HtmlTransformer.classBlock);
+		handler.closeNewLine();
+		handler.indent();
+		
 		Cmd();
 		while (StartOf(1)) {
 			Cmd();
 		}
 		Expect(6);
+		handler.exdent();
+		handler.newLine();
+		handler.append("fim", HtmlTransformer.classBlock);
 		handler.finish(); 
+		
 	}
 
 	void ConstantDeclaration() {
 		String declaredConstant = ""; 
 		Expect(39);
+		handler.newLine();
+		handler.append("constante" + " ", HtmlTransformer.classType); 
+		
 		declaredConstant = Constant();
 		Expect(13);
+		handler.append(" " + "=" + " "); 
 		Expect(2);
-		handler.debugln(t.val); 
+		handler.append(t.val); 
 		Expect(22);
+		handler.append(";");
+		handler.closeNewLine(); 
+		
 	}
 
 	void Procedure() {
@@ -231,18 +259,19 @@ public class Parser {
 		ProcedureDeclaration();
 		Expect(5);
 		handler.identNewLine();  //creating new line with adjustments on indent
-		handler.append("inicio");
+		handler.append("inicio", HtmlTransformer.classBlock);
 		handler.closeNewLine(); 
+		handler.indent();
 		
+		Cmd();
 		while (StartOf(1)) {
 			Cmd();
-			while (StartOf(1)) {
-				Cmd();
-			}
 		}
+		handler.exdent(); 
 		Expect(6);
 		handler.newLine(); // criando uma linha com a indentaÃ§Ã£o existente
-		handler.append("fim"); handler.closeNewLine();
+		handler.append("fim", HtmlTransformer.classBlock); 
+		handler.closeNewLine();
 		handler.exdentNewLine(); // decrementando a indentaÃ§Ã£o. "Limpando estado"
 		
 	}
@@ -255,6 +284,7 @@ public class Parser {
 			break;
 		}
 		case 1: case 2: case 3: case 28: case 41: {
+			handler.newLine(); 
 			Instruction();
 			break;
 		}
@@ -265,22 +295,21 @@ public class Parser {
 		case 7: {
 			Get();
 			handler.newLine();
-			handler.append("enquanto");
+			handler.append("enquanto" + " ", HtmlTransformer.classBlock);
 			
 			Expr();
 			Expect(8);
-			handler.append(" " + "faca");
+			handler.append(" " + "faca", HtmlTransformer.classBlock);
 			handler.closeNewLine();
 			handler.indent(); //adding new indent
 			
 			while (StartOf(1)) {
 				Cmd();
-				handler.newLine(); handler.append("teste-enquanto"); handler.closeNewLine(); 
 			}
 			Expect(9);
 			handler.exdent();
 			handler.newLine();
-			handler.append("fimenquanto");
+			handler.append("fimenquanto", HtmlTransformer.classBlock);
 			handler.closeNewLine();
 			
 			break;
@@ -288,19 +317,18 @@ public class Parser {
 		case 10: {
 			Get();
 			handler.newLine();
-			handler.append("repita");
+			handler.append("repita", handler.classBlock);
 			handler.closeNewLine();
 			handler.indent();
 			
 			Cmd();
-			handler.newLine(); handler.append("teste-repita"); handler.closeNewLine(); 
 			while (StartOf(1)) {
 				Cmd();
 			}
 			Expect(11);
 			handler.exdent();
 			handler.newLine();
-			handler.append("ate" +  " ");
+			handler.append("ate" +  " ", HtmlTransformer.classBlock);
 			
 			Instruction();
 			handler.closeNewLine();
@@ -310,34 +338,32 @@ public class Parser {
 		case 12: {
 			Get();
 			handler.newLine();
-			handler.append("para" + " ");
+			handler.append("para" + " ", HtmlTransformer.classBlock);
 			
 			Expr();
 			Expect(13);
+			handler.append("=" + " "); 
 			Expr();
-			handler.append("expr" + " "); 
 			Expect(11);
-			handler.append("ate" + " "); 
+			handler.append("ate" + " ", HtmlTransformer.classBlock); 
 			Expr();
-			handler.append("expr" + " "); 
 			Expect(14);
-			handler.append("passo" + " "); 
+			handler.append("passo" + " ", HtmlTransformer.classBlock); 
 			Expect(2);
 			handler.append(t.val + " "); 
 			Expect(8);
-			handler.append("faca");
+			handler.append("faca", HtmlTransformer.classBlock);
 			handler.closeNewLine();
 			handler.indent();
 			
 			Cmd();
-			handler.newLine(); handler.append("para-teste-cmd"); handler.closeNewLine(); 
 			while (StartOf(1)) {
 				Cmd();
 			}
 			Expect(15);
 			handler.exdent();
 			handler.newLine();
-			handler.append("fimpara");
+			handler.append("fimpara", HtmlTransformer.classBlock);
 			handler.closeNewLine();
 			
 			break;
@@ -393,7 +419,7 @@ public class Parser {
 		case 21: {
 			Get();
 			handler.newLine();
-			handler.append("retorne" + " ");
+			handler.append("retorne" + " ", HtmlTransformer.classType);
 			
 			Expr();
 			handler.append("expr" + ";");
@@ -405,17 +431,15 @@ public class Parser {
 		case 23: {
 			Get();
 			handler.newLine();
-			handler.append("se" + " ");
+			handler.append("se" + " ", HtmlTransformer.classBlock);
 			
 			Expr();
-			handler.append("expr"+ " "); 
 			Expect(24);
-			handler.append("entao"); 
+			handler.append("entao", HtmlTransformer.classBlock); 
 			handler.closeNewLine();
 			handler.indent();
 			
 			Cmd();
-			handler.debugHtml(); 
 			while (StartOf(1)) {
 				Cmd();
 			}
@@ -423,12 +447,11 @@ public class Parser {
 			if (la.kind == 25) {
 				Get();
 				handler.newLine();
-				handler.append("senao");
+				handler.append("senao", HtmlTransformer.classBlock);
 				handler.closeNewLine();
 				handler.indent();
 				
 				Cmd();
-				handler.debugHtml(); 
 				while (StartOf(1)) {
 					Cmd();
 				}
@@ -438,7 +461,8 @@ public class Parser {
 			Expect(26);
 			Expect(22);
 			handler.newLine();
-			handler.append("fimse;");
+			handler.append("fimse", HtmlTransformer.classBlock);
+			handler.append(";");
 			handler.closeNewLine();
 			
 			break;
@@ -450,12 +474,17 @@ public class Parser {
 	void Read() {
 		String readFromKeyboard = ""; 
 		Expect(34);
-		handler.debug(t.val); 
+		handler.newLine();
+		handler.append("leia", HtmlTransformer.classFunc); 
+		
 		Expect(28);
+		handler.append("("); 
 		readFromKeyboard = Variable();
-		handler.debug(readFromKeyboard); 
 		Expect(30);
 		Expect(22);
+		handler.append(");");
+		handler.closeNewLine();
+		
 	}
 
 	void Instruction() {
@@ -463,6 +492,7 @@ public class Parser {
 		Expr();
 		if (la.kind == 13) {
 			Get();
+			handler.append(" " + "=" + " "); 
 			if (StartOf(2)) {
 				Expr();
 			} else if (la.kind == 35) {
@@ -470,25 +500,39 @@ public class Parser {
 			} else SynErr(53);
 		}
 		Expect(22);
+		handler.append(";");
+		handler.closeNewLine(); 
+		
 	}
 
 	String  VariableDeclaration() {
 		String  declaration;
 		String var = ""; 
 		Expect(38);
+		handler.newLine();
+		handler.append("variavel" + " "); 
+		
 		var = Variable();
 		while (la.kind == 29) {
 			Get();
+			handler.append(", "); 
 			var = Variable();
 		}
 		Expect(19);
 		Expect(31);
+		handler.append(" "+ ":" + " ");
+		handler.append("inteiro", HtmlTransformer.classType);
+		
 		if (la.kind == 32) {
 			Get();
 			Expect(33);
+			handler.append("[]"); 
 		}
 		Expect(22);
-		declaration = t.val; 
+		handler.append(";");
+		handler.closeNewLine();
+		declaration = t.val;
+		
 		return declaration;
 	}
 
@@ -504,18 +548,25 @@ public class Parser {
 		String  newInt;
 		Expect(35);
 		Expect(31);
+		handler.append("novo inteiro"); 
 		if (la.kind == 32) {
 			Get();
+			handler.append("["); 
 			Expr();
 			Expect(33);
+			handler.append("]"); 
 		} else if (la.kind == 36) {
 			Get();
+			handler.append(" " + "{"); 
 			Expect(2);
+			handler.append(t.val); 
 			while (la.kind == 29) {
 				Get();
 				Expect(2);
+				handler.append("," + " " + t.val); 
 			}
 			Expect(37);
+			handler.append("}"); 
 		} else SynErr(54);
 		newInt = t.val; 
 		return newInt;
@@ -525,13 +576,14 @@ public class Parser {
 		Expect(27);
 		handler.newLine(); 
 		Expect(1);
-		handler.procedureName(t.val); 
+		handler.append("procedimento " + t.val, HtmlTransformer.classFunc); 
 		Expect(28);
 		handler.append("("); 
 		if (la.kind == 1) {
 			ProcedureParams();
 			while (la.kind == 29) {
 				Get();
+				handler.append(", "); 
 				ProcedureParams();
 			}
 		}
@@ -540,7 +592,9 @@ public class Parser {
 		if (la.kind == 19) {
 			Get();
 			Expect(31);
-			handler.append(": inteiro"); 
+			handler.append(":" + " ");
+			handler.append("inteiro", HtmlTransformer.classType);
+			
 		}
 		handler.closeNewLine(); 
 	}
@@ -551,23 +605,29 @@ public class Parser {
 		
 		Expect(19);
 		Expect(31);
+		handler.append(":" + " ");
+		handler.append("inteiro", HtmlTransformer.classType); 
+		
 		if (la.kind == 32) {
 			Get();
 			Expect(33);
+			handler.append("[]"); 
 		}
 	}
 
 	String  Variable() {
 		String  var;
 		Expect(1);
-		handler.debug(t.val); var = t.val; 
+		handler.append(t.val);
+		var = t.val;
+		
 		return var;
 	}
 
 	String  Constant() {
 		String  constant;
 		Expect(3);
-		handler.debug(t.val); constant = t.val; 
+		handler.append(t.val); constant = t.val; 
 		return constant;
 	}
 
@@ -576,8 +636,10 @@ public class Parser {
 		while (la.kind == 40 || la.kind == 41) {
 			if (la.kind == 40) {
 				Get();
+				handler.append(" " + "+" + " "); 
 			} else {
 				Get();
+				handler.append(" " + "-" + " "); 
 			}
 			Term();
 		}
@@ -587,26 +649,32 @@ public class Parser {
 		switch (la.kind) {
 		case 45: {
 			Get();
+			handler.append(" " + "==" + " "); 
 			break;
 		}
 		case 46: {
 			Get();
+			handler.append(" " + "!=" + " "); 
 			break;
 		}
 		case 47: {
 			Get();
+			handler.append(" " + "<" + " "); 
 			break;
 		}
 		case 48: {
 			Get();
+			handler.append(" " + ">" + " "); 
 			break;
 		}
 		case 49: {
 			Get();
+			handler.append(" " + "<=" + " "); 
 			break;
 		}
 		case 50: {
 			Get();
+			handler.append(" " + ">=" + " "); 
 			break;
 		}
 		default: SynErr(55); break;
@@ -618,10 +686,13 @@ public class Parser {
 		while (la.kind == 42 || la.kind == 43 || la.kind == 44) {
 			if (la.kind == 42) {
 				Get();
+				handler.append(" " + "*" + " "); 
 			} else if (la.kind == 43) {
 				Get();
+				handler.append(" " + "/" + " "); 
 			} else {
 				Get();
+				handler.append(" " + "%" + " "); 
 			}
 			Fator();
 		}
@@ -633,13 +704,17 @@ public class Parser {
 			Name();
 		} else if (la.kind == 2) {
 			Get();
+			handler.append(t.val); 
 		} else if (la.kind == 41) {
 			Get();
+			handler.append("-"); 
 			Fator();
 		} else if (la.kind == 28) {
 			Get();
+			handler.append("("); 
 			Expr();
 			Expect(30);
+			handler.append(")"); 
 		} else if (la.kind == 3) {
 			cons = Constant();
 		} else SynErr(56);
@@ -647,17 +722,25 @@ public class Parser {
 
 	void Name() {
 		Expect(1);
+		if(la.val.equals("("))
+		handler.append(t.val, HtmlTransformer.classFunc);
+		else handler.append(t.val);
+		
 		if (la.kind == 28 || la.kind == 32) {
 			if (la.kind == 28) {
 				Get();
+				handler.append("("); 
 				if (StartOf(2)) {
 					ArgList();
 				}
 				Expect(30);
+				handler.append(")"); 
 			} else {
 				Get();
+				handler.append("["); 
 				Expr();
 				Expect(33);
+				handler.append("]"); 
 			}
 		}
 	}
@@ -666,6 +749,7 @@ public class Parser {
 		Expr();
 		while (la.kind == 29) {
 			Get();
+			handler.append("," + " "); 
 			Expr();
 		}
 	}
