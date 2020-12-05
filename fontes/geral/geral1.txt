@@ -1,4 +1,4 @@
-algoritmo comparacaoAlgosOrdenacao
+algoritmo ComparacaoAlgosOrdenacao
 constante TAM = 10;
 constante VELOCIDADE = 60;
 constante ACELERACAO = 20;

@@ -28,7 +28,7 @@ class HtmlTransformer {
     public HtmlTransformer() {
 		try {
 			this.line = "";
-			this.html = "<html><head>" + htmlCssRef + "<title>uPortugol</title></head><body>";
+			this.html = "<html><head>" + htmlCssRef + "<title>uPortugol</title></head><body><div class=\"header\"><span>u</span>Portugol</div><main>";
 			this.writer = new FileWriter("uPortugol.html");
 		} catch(IOException e) {
 			System.out.println("Falha ao abrir/criar o arquivo html " + e.getMessage());
@@ -42,7 +42,6 @@ class HtmlTransformer {
 	public void exdent() {
 		identation-= baseOffsetIdentation;
 	}
-
 
 	public void newLine() { 
 		int i = 0;
@@ -95,7 +94,7 @@ class HtmlTransformer {
 	
 	public void finish() {
 		try {
-			this.html += "</body></html>";
+			this.html += "</main></body></html>";
 			this.writer.write(this.html);
 			this.writer.close();
 			System.out.println("O arquivo foi gravado com sucesso!");
@@ -206,7 +205,7 @@ public class Parser {
 		String declaration = ""; 
 		if (la.kind == 4) {
 			Get();
-			Expect(1);
+			Expect(3);
 			handler.newLine();
 			handler.append("algoritmo" + " ", HtmlTransformer.classType);
 			handler.append(t.val);
@@ -371,7 +370,7 @@ public class Parser {
 		case 16: {
 			Get();
 			handler.newLine();
-			handler.append("caso" + " ");
+			handler.append("caso" + " ", HtmlTransformer.classBlock);
 			
 			Expect(1);
 			handler.append(t.val);
@@ -381,12 +380,12 @@ public class Parser {
 			while (la.kind == 17) {
 				Get();
 				handler.newLine();
-				handler.append("seja" + " "); 
+				handler.append("seja" + " ", HtmlTransformer.classBlock); 
 				
 				Expect(2);
 				handler.append(t.val + " "); 
 				Expect(8);
-				handler.append("faca");
+				handler.append("faca", HtmlTransformer.classBlock);
 				handler.closeNewLine();
 				handler.indent();
 				
@@ -399,7 +398,7 @@ public class Parser {
 			Expect(18);
 			Expect(19);
 			handler.newLine();
-			handler.append("outrocaso:");
+			handler.append("outrocaso:", HtmlTransformer.classBlock);
 			handler.closeNewLine();
 			handler.indent();
 			
@@ -435,7 +434,7 @@ public class Parser {
 			
 			Expr();
 			Expect(24);
-			handler.append("entao", HtmlTransformer.classBlock); 
+			handler.append(" " + "entao", HtmlTransformer.classBlock); 
 			handler.closeNewLine();
 			handler.indent();
 			
@@ -510,7 +509,7 @@ public class Parser {
 		String var = ""; 
 		Expect(38);
 		handler.newLine();
-		handler.append("variavel" + " "); 
+		handler.append("variavel" + " ", HtmlTransformer.classType); 
 		
 		var = Variable();
 		while (la.kind == 29) {
@@ -548,7 +547,7 @@ public class Parser {
 		String  newInt;
 		Expect(35);
 		Expect(31);
-		handler.append("novo inteiro"); 
+		handler.append("novo inteiro", HtmlTransformer.classFunc); 
 		if (la.kind == 32) {
 			Get();
 			handler.append("["); 

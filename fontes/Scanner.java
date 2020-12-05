@@ -424,7 +424,7 @@ public class Scanner {
 					else {t.kind = 2; break loop;}
 				case 3:
 					recEnd = pos; recKind = 3;
-					if (ch >= 'A' && ch <= 'Z') {AddCh(); state = 3; break;}
+					if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z') {AddCh(); state = 3; break;}
 					else {t.kind = 3; break loop;}
 				case 4:
 					{t.kind = 19; break loop;}

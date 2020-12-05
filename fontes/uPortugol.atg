@@ -26,7 +26,7 @@ class HtmlTransformer {
     public HtmlTransformer() {
 		try {
 			this.line = "";
-			this.html = "<html><head>" + htmlCssRef + "<title>uPortugol</title></head><body>";
+			this.html = "<html><head>" + htmlCssRef + "<title>uPortugol</title></head><body><div class=\"header\"><span>u</span>Portugol</div><main>";
 			this.writer = new FileWriter("uPortugol.html");
 		} catch(IOException e) {
 			System.out.println("Falha ao abrir/criar o arquivo html " + e.getMessage());
@@ -92,7 +92,7 @@ class HtmlTransformer {
 	
 	public void finish() {
 		try {
-			this.html += "</body></html>";
+			this.html += "</main></body></html>";
 			this.writer.write(this.html);
 			this.writer.close();
 			System.out.println("O arquivo foi gravado com sucesso!");
@@ -131,7 +131,7 @@ CHARACTERS
 TOKENS
 	ident = letterLower { letterLower | letterUpper | digit } .
 	number = digit { digit } .
-	constantNumber = letterUpper { letterUpper } .
+	constantNumber = letterUpper { letterUpper | digit | letterLower } .
 
 IGNORE '\t' + '\r' + '\n'
 
@@ -139,7 +139,7 @@ PRODUCTIONS
     UPortugol   (. String declaration = ""; .)
 	= [
 		"algoritmo"										
-		ident											(.
+		constantNumber											(.
 															handler.newLine();
 															handler.append("algoritmo" + " ", HtmlTransformer.classType);
 															handler.append(t.val);
@@ -243,7 +243,7 @@ PRODUCTIONS
 
 			|	"caso"										(.
 																handler.newLine();
-																handler.append("caso" + " ");
+																handler.append("caso" + " ", HtmlTransformer.classBlock);
 															.)																			
 					ident 									(.	
 																handler.append(t.val);
@@ -252,11 +252,11 @@ PRODUCTIONS
 															.)
 					{ 
 						"seja" 								(.	handler.newLine();
-																handler.append("seja" + " "); 
+																handler.append("seja" + " ", HtmlTransformer.classBlock); 
 															.)
 							number 							(.	handler.append(t.val + " "); .)
 						"faca"								(. 
-																handler.append("faca");
+																handler.append("faca", HtmlTransformer.classBlock);
 																handler.closeNewLine();
 																handler.indent();
 															.)
@@ -268,7 +268,7 @@ PRODUCTIONS
 					}
 					"outrocaso" ":"							(. 
 																handler.newLine();
-																handler.append("outrocaso:");
+																handler.append("outrocaso:", HtmlTransformer.classBlock);
 																handler.closeNewLine();
 																handler.indent();
 															.)
@@ -299,7 +299,7 @@ PRODUCTIONS
 																handler.append("se" + " ", HtmlTransformer.classBlock);
 															.)
 					Expr 										
-				"entao"										(.	handler.append("entao", HtmlTransformer.classBlock); 
+				"entao"										(.	handler.append(" " + "entao", HtmlTransformer.classBlock); 
 																handler.closeNewLine();
 																handler.indent();
 															.)
@@ -410,7 +410,7 @@ PRODUCTIONS
     .
 
 	NewInteger<out String newInt> 
-	= "novo" "inteiro" 									(.	handler.append("novo inteiro"); .)
+	= "novo" "inteiro" 									(.	handler.append("novo inteiro", HtmlTransformer.classFunc); .)
 		( 
 			"[" 										(.	handler.append("["); .)
 				Expr 
@@ -428,7 +428,7 @@ PRODUCTIONS
     VariableDeclaration<out String declaration> 		(.	String var = ""; .)
 		= "variavel"									(.
 															handler.newLine();
-															handler.append("variavel" + " "); 
+															handler.append("variavel" + " ", HtmlTransformer.classType); 
 														.)
 			Variable<out var>														
         	{
