@@ -10,3 +10,9 @@ Saída do Compilador
 ---
 A saída do compilador é gravada em **fontes/uPortugol.html**.
 É muito importante que todos os arquivos estejam presentes para que a página seja estilizada
+
+
+Exemplo de Código uPortugol formatado
+---
+O código uPortugol mostrado foi obtido através da compilação do arquivo em fontes/geral/geral1.txt.
+![uPortugol-formatado-exemplo](https://raw.githubusercontent.com/gabsrl/uPortugolHTMLViwer/master/exemplo.png?token=AI6NQQCJWJ7HLDMOL2QEWDS72SSTW)
