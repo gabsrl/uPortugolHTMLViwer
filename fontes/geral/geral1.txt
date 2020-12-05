@@ -1,3 +1,4 @@
+/***** insercao *******/
 algoritmo ComparacaoAlgosOrdenacao
 constante TAM = 10;
 constante VELOCIDADE = 60;
@@ -6,11 +7,13 @@ constante ACELERACAO = 20;
 procedimento imprime(v: inteiro[])
 inicio
     algumacoisaaqui();
+    escreva("v[", i, "] = ", v[i], "\n");
 fim
 
 procedimento copia(v1: inteiro[], v2: inteiro[], numeroTam1: inteiro): inteiro
 inicio
     1+1;
+    /***** insercao *******/
 fim
 
 procedimento troque(v: inteiro[], i: inteiro, j: inteiro)
@@ -128,5 +131,4 @@ inicio
     senao
         c = 1;
     fimse;
-
 fim

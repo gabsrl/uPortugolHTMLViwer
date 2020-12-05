@@ -3,13 +3,14 @@ import java.util.ArrayList;
 
 /**
  * @Author: Gabriel Rocha de Lima (grl@icomp.ufam.edu.br)
- * Exercício de Compiladores lecionado por Marco Cristo (Icomp/UFAM)
+ * @Author: Enzo H. Albuquerque  (ehsa@icomp.ufam.edu.br)
+ * Trabalho de Compiladores - uPortugol 
+ * Professor: Marco Cristo (Icomp/UFAM)
  * Icomp/UFAM - AM - Brasil
- * Sun Nov, 15, 2020
+ * Saturday Dez, 5, 2020
  */
 
 class HtmlTransformer {
-    //ArrayList<String> inputWords;
     String line;
 	String html;
 	FileWriter writer;
@@ -21,7 +22,7 @@ class HtmlTransformer {
 	static String classFunc = "funcs";
 	static String classBlock = "blocks";
 	static int identation = 0;
-	static int baseOffsetIdentation = 20; // 10px
+	static int baseOffsetIdentation = 20; 
 
     public HtmlTransformer() {
 		try {
@@ -126,12 +127,19 @@ CHARACTERS
 	letterUpper = 'A'..'Z' .
     letra = 'A'..'Z' + 'a'..'z'.
     upperLetters = 'A'..'Z' .
-    digit = "0123456789".
+	digit = "0123456789" .
+	noquote = ANY - '"' .
+	other = ANY - '*' - '/' .
 
 TOKENS
 	ident = letterLower { letterLower | letterUpper | digit } .
 	number = digit { digit } .
 	constantNumber = letterUpper { letterUpper | digit | letterLower } .
+	string = "\"" noquote{ noquote } "\"" .
+
+
+COMMENTS FROM "/*" TO "*/" NESTED
+
 
 IGNORE '\t' + '\r' + '\n'
 
@@ -173,6 +181,7 @@ PRODUCTIONS
 	Cmd														(. String varDeclaration = ""; .)
 	= 																	
 			Read
+			| Write
 			| 	(.	handler.newLine(); .) Instruction
 			|	VariableDeclaration <out varDeclaration>
 			|	"enquanto"									(. 
@@ -407,8 +416,32 @@ PRODUCTIONS
 															handler.append(");");
 															handler.closeNewLine();
 														.)
-    .
-
+	.
+	
+	Write
+	= "escreva"											(.	
+															handler.newLine();
+															handler.append("escreva", HtmlTransformer.classFunc);
+															handler.append("(");
+														.)
+		"("
+			(
+				string 									(.	handler.append(t.val); .)
+				| Expr
+			)	
+			{
+				","										 (.	handler.append("," + " "); .)
+				(										
+					string 								(.	handler.append(t.val); .)
+					| Expr 
+				)
+			}
+		")"												(.	
+															handler.append(");");
+															handler.closeNewLine();
+														.) 
+		";"	
+	.
 	NewInteger<out String newInt> 
 	= "novo" "inteiro" 									(.	handler.append("novo inteiro", HtmlTransformer.classFunc); .)
 		( 
