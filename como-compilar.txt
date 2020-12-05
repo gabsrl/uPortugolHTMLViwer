@@ -1,3 +1,0 @@
-java -jar ../Coco.jar -frames .. uPortugol.atg
-javac Compile.java Parser.java Scanner.java // ou javac *.java
-java Compile entrada.txt
