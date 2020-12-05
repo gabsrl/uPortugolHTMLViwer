@@ -35,6 +35,14 @@ class HtmlTransformer {
 		}
 	}
 
+	public void indent() {
+		identation += baseOffsetIdentation;
+	}
+
+	public void exdent() {
+		identation-= baseOffsetIdentation;
+	}
+
 
 	public void newLine() { 
 		int i = 0;
@@ -88,6 +96,12 @@ class HtmlTransformer {
 			System.out.println("Falha ao salvar o arquivo html " + e.getMessage());
 		}
 
+	}
+
+	public void debugHtml() {
+		this.newLine(); 
+		this.append("teste-comando"); 
+		this.closeNewLine();
 	}
 
 	public void debugln(String s) {
@@ -216,9 +230,15 @@ public class Parser {
 		String varDecl = ""; 
 		ProcedureDeclaration();
 		Expect(5);
-		handler.identNewLine(); handler.append("inicio"); handler.closeNewLine(); 
-		while (la.kind == 38) {
-			varDecl = VariableDeclaration();
+		handler.identNewLine();  //creating new line with adjustments on indent
+		handler.append("inicio");
+		handler.closeNewLine(); 
+		
+		while (StartOf(1)) {
+			Cmd();
+			while (StartOf(1)) {
+				Cmd();
+			}
 		}
 		Expect(6);
 		handler.newLine(); // criando uma linha com a indentaÃ§Ã£o existente
@@ -244,85 +264,183 @@ public class Parser {
 		}
 		case 7: {
 			Get();
+			handler.newLine();
+			handler.append("enquanto");
+			
 			Expr();
 			Expect(8);
+			handler.append(" " + "faca");
+			handler.closeNewLine();
+			handler.indent(); //adding new indent
+			
 			while (StartOf(1)) {
 				Cmd();
+				handler.newLine(); handler.append("teste-enquanto"); handler.closeNewLine(); 
 			}
 			Expect(9);
+			handler.exdent();
+			handler.newLine();
+			handler.append("fimenquanto");
+			handler.closeNewLine();
+			
 			break;
 		}
 		case 10: {
 			Get();
+			handler.newLine();
+			handler.append("repita");
+			handler.closeNewLine();
+			handler.indent();
+			
 			Cmd();
+			handler.newLine(); handler.append("teste-repita"); handler.closeNewLine(); 
 			while (StartOf(1)) {
 				Cmd();
 			}
 			Expect(11);
+			handler.exdent();
+			handler.newLine();
+			handler.append("ate" +  " ");
+			
 			Instruction();
+			handler.closeNewLine();
+			
 			break;
 		}
 		case 12: {
 			Get();
+			handler.newLine();
+			handler.append("para" + " ");
+			
 			Expr();
 			Expect(13);
 			Expr();
+			handler.append("expr" + " "); 
 			Expect(11);
+			handler.append("ate" + " "); 
 			Expr();
+			handler.append("expr" + " "); 
 			Expect(14);
+			handler.append("passo" + " "); 
 			Expect(2);
+			handler.append(t.val + " "); 
 			Expect(8);
+			handler.append("faca");
+			handler.closeNewLine();
+			handler.indent();
+			
 			Cmd();
+			handler.newLine(); handler.append("para-teste-cmd"); handler.closeNewLine(); 
 			while (StartOf(1)) {
 				Cmd();
 			}
 			Expect(15);
+			handler.exdent();
+			handler.newLine();
+			handler.append("fimpara");
+			handler.closeNewLine();
+			
 			break;
 		}
 		case 16: {
 			Get();
+			handler.newLine();
+			handler.append("caso" + " ");
+			
 			Expect(1);
+			handler.append(t.val);
+			handler.closeNewLine();
+			handler.indent(); 
+			
 			while (la.kind == 17) {
 				Get();
+				handler.newLine();
+				handler.append("seja" + " "); 
+				
 				Expect(2);
+				handler.append(t.val + " "); 
 				Expect(8);
+				handler.append("faca");
+				handler.closeNewLine();
+				handler.indent();
+				
 				Cmd();
 				while (StartOf(1)) {
 					Cmd();
 				}
+				handler.exdent(); 
 			}
 			Expect(18);
 			Expect(19);
+			handler.newLine();
+			handler.append("outrocaso:");
+			handler.closeNewLine();
+			handler.indent();
+			
 			Cmd();
 			while (StartOf(1)) {
 				Cmd();
 			}
+			handler.exdent(); 
 			Expect(20);
+			handler.exdent();
+			handler.newLine();
+			handler.append("fimcaso");
+			handler.closeNewLine();
+			
 			break;
 		}
 		case 21: {
 			Get();
+			handler.newLine();
+			handler.append("retorne" + " ");
+			
 			Expr();
+			handler.append("expr" + ";");
+			handler.closeNewLine();
+			
 			Expect(22);
 			break;
 		}
 		case 23: {
 			Get();
+			handler.newLine();
+			handler.append("se" + " ");
+			
 			Expr();
+			handler.append("expr"+ " "); 
 			Expect(24);
+			handler.append("entao"); 
+			handler.closeNewLine();
+			handler.indent();
+			
 			Cmd();
+			handler.debugHtml(); 
 			while (StartOf(1)) {
 				Cmd();
 			}
+			handler.exdent(); 
 			if (la.kind == 25) {
 				Get();
+				handler.newLine();
+				handler.append("senao");
+				handler.closeNewLine();
+				handler.indent();
+				
 				Cmd();
+				handler.debugHtml(); 
 				while (StartOf(1)) {
 					Cmd();
 				}
+				handler.exdent();
+				
 			}
 			Expect(26);
 			Expect(22);
+			handler.newLine();
+			handler.append("fimse;");
+			handler.closeNewLine();
+			
 			break;
 		}
 		default: SynErr(52); break;

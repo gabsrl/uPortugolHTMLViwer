@@ -33,6 +33,14 @@ class HtmlTransformer {
 		}
 	}
 
+	public void indent() {
+		identation += baseOffsetIdentation;
+	}
+
+	public void exdent() {
+		identation-= baseOffsetIdentation;
+	}
+
 
 	public void newLine() { 
 		int i = 0;
@@ -88,6 +96,12 @@ class HtmlTransformer {
 
 	}
 
+	public void debugHtml() {
+		this.newLine(); 
+		this.append("teste-comando"); 
+		this.closeNewLine();
+	}
+
 	public void debugln(String s) {
         System.out.println(s);
     }
@@ -129,20 +143,165 @@ PRODUCTIONS
 				{ 
 					Cmd 
 				}
-		"fim"										(. handler.finish(); .)
+		"fim"												(. handler.finish(); .)
     .
 
-	Cmd												(. String varDeclaration = ""; .)
+	Cmd														(. String varDeclaration = ""; .)
 	= 																	
 			Read
 			| 	Instruction
 			|	VariableDeclaration <out varDeclaration>
-			|	"enquanto"	Expr "faca" { Cmd } "fimenquanto"
-			|	"repita" Cmd { Cmd } "ate" Instruction
-			|	"para" Expr "=" Expr "ate" Expr "passo" number "faca" Cmd { Cmd } "fimpara"
-			|	"caso" ident { "seja" number "faca"  Cmd { Cmd } } "outrocaso" ":" Cmd { Cmd } "fimcaso"
-			|	"retorne" Expr ";"
-			|	"se" Expr "entao" Cmd { Cmd } [ "senao" Cmd { Cmd } ] "fimse" ";"
+			|	"enquanto"									(. 
+																handler.newLine();
+																handler.append("enquanto");
+															.)
+					Expr 									
+				"faca"										(. 
+																handler.append(" " + "faca");
+																handler.closeNewLine();
+																handler.indent(); //adding new indent
+															.) 
+				{ 
+					Cmd 									(. handler.newLine(); handler.append("teste-enquanto"); handler.closeNewLine(); .)
+				} 
+				"fimenquanto"								(.
+																handler.exdent();
+																handler.newLine();
+																handler.append("fimenquanto");
+																handler.closeNewLine();
+															.)
+
+			|	"repita"									(.
+																handler.newLine();
+																handler.append("repita");
+																handler.closeNewLine();
+																handler.indent();
+															.)	
+					Cmd 									(. handler.newLine(); handler.append("teste-repita"); handler.closeNewLine(); .)
+					{ 
+						Cmd 
+					} 
+					"ate" 									(. 
+																handler.exdent();
+																handler.newLine();
+																handler.append("ate" +  " ");
+
+															.)
+					Instruction								(. 
+																handler.closeNewLine();
+															.)
+
+			|	"para"										(.
+																handler.newLine();
+																handler.append("para" + " ");
+															.)
+					Expr
+						"=" 
+					Expr 									(. handler.append("expr" + " "); .)
+				"ate" 										(. handler.append("ate" + " "); .)
+					Expr 									(. handler.append("expr" + " "); .)
+				"passo" 									(. handler.append("passo" + " "); .)
+					number 									(. handler.append(t.val + " "); .)
+				"faca"										(. 
+																handler.append("faca");
+																handler.closeNewLine();
+																handler.indent();
+															.)
+					Cmd 									(. handler.newLine(); handler.append("para-teste-cmd"); handler.closeNewLine(); .)
+					{ 
+						Cmd 
+					} "fimpara"								(. 
+																handler.exdent();
+																handler.newLine();
+																handler.append("fimpara");
+																handler.closeNewLine();
+															.)
+
+			|	"caso"										(.
+																handler.newLine();
+																handler.append("caso" + " ");
+															.)																			
+					ident 									(.	
+																handler.append(t.val);
+																handler.closeNewLine();
+																handler.indent(); 
+															.)
+					{ 
+						"seja" 								(.	handler.newLine();
+																handler.append("seja" + " "); 
+															.)
+							number 							(.	handler.append(t.val + " "); .)
+						"faca"								(. 
+																handler.append("faca");
+																handler.closeNewLine();
+																handler.indent();
+															.)
+							Cmd 
+							{ 
+								Cmd 
+							}
+															(.	handler.exdent(); .) 
+					}
+					"outrocaso" ":"							(. 
+																handler.newLine();
+																handler.append("outrocaso:");
+																handler.closeNewLine();
+																handler.indent();
+															.)
+						Cmd 
+						{ 
+							Cmd 
+						} 
+															(.	handler.exdent(); .)
+					"fimcaso"								(.
+																handler.exdent();
+																handler.newLine();
+																handler.append("fimcaso");
+																handler.closeNewLine();
+															.)
+
+			|	"retorne" 									(.	
+																handler.newLine();
+																handler.append("retorne" + " ");
+															.)
+					Expr 									(.	
+																handler.append("expr" + ";");
+																handler.closeNewLine();
+															.)
+				";"
+
+			|	"se"										(.	
+																handler.newLine();
+																handler.append("se" + " ");
+															.)
+					Expr 									(.	handler.append("expr"+ " "); .)	
+				"entao"										(.	handler.append("entao"); 
+																handler.closeNewLine();
+																handler.indent();
+															.)
+					Cmd										(.	handler.debugHtml(); .)
+					{ 
+						Cmd 
+					} 
+															(.	handler.exdent(); .)
+					[
+						"senao"								(.	handler.newLine();
+																handler.append("senao");
+																handler.closeNewLine();
+																handler.indent();
+															.)
+							Cmd								(. handler.debugHtml(); .)
+							{ 
+								Cmd 
+							} 
+															(.
+																handler.exdent();
+															.)
+					] "fimse" ";"							(.
+																handler.newLine();
+																handler.append("fimse;");
+																handler.closeNewLine();
+															.)
 	.
 
 	Instruction (. String newInteger = ""; .)
@@ -155,10 +314,14 @@ PRODUCTIONS
 
 	Procedure										(. String varDecl = ""; .)
 	= ProcedureDeclaration
-		"inicio" 									(. handler.identNewLine(); handler.append("inicio"); handler.closeNewLine(); .)
+		"inicio" 									(. 
+														handler.identNewLine();  //creating new line with adjustments on indent
+														handler.append("inicio");
+														handler.closeNewLine(); 
+													.)
 			{								
-				VariableDeclaration<out varDecl>
-			 } "fim"								(. 
+				Cmd { Cmd }
+			} "fim"									(. 
 														handler.newLine(); // criando uma linha com a indentação existente
 														handler.append("fim"); handler.closeNewLine();
 														handler.exdentNewLine(); // decrementando a indentação. "Limpando estado"
