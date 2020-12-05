@@ -1,2 +1,4 @@
 *.class
 *.java.old
+fontes/Parser.java
+fontes/Scanner.java
